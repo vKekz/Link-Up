@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
+import { EnvironmentHandler } from "../environments/handler/environment.handler";
 
 @Component({
   selector: "app-root",
@@ -9,4 +10,8 @@ import { RouterOutlet } from "@angular/router";
 })
 export class AppComponent {
   title = "Link-Up";
+
+  constructor() {
+    EnvironmentHandler.load();
+  }
 }
