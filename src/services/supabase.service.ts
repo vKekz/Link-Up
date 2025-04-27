@@ -7,6 +7,8 @@ import { environment } from "../environments/environment.production";
 })
 /**
  * Represents the service that is used for Supabase API communication.
+ *
+ * See https://supabase.com/docs/reference/javascript/start
  */
 export class SupabaseService {
   private readonly supabaseClient: SupabaseClient;
