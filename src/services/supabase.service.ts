@@ -1,5 +1,5 @@
 ﻿import { Injectable } from "@angular/core";
-import { createClient, SupabaseClient } from "@supabase/supabase-js";
+import { AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
 import { environment } from "../environments/environment.production";
 
 @Injectable({
@@ -18,7 +18,7 @@ export class SupabaseService {
   }
 
   // Example usage for signing up a user.
-  public signUpUser(email: string, password: string) {
+  public signUpUser(email: string, password: string): Promise<AuthResponse> {
     return this.supabaseClient.auth.signUp({
       email: email,
       password: password,
