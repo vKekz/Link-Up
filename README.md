@@ -12,12 +12,12 @@ Link Up is an [Angular](https://angular.dev/) and [SupaBase](https://supabase.co
 
 **Build the project:**
 1. Install the [Angular-CLI](https://angular.dev/tools/cli/setup-local#install-the-angular-cli) & Prettier (executed in terminal)
-  - `npm install -g @angular/cli`
-  - `npm install -g prettier` (used as a formatter)
-  - `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` (Optional: If errors occur when running the web-app)
+   - `npm install -g @angular/cli`
+   - `npm install -g prettier` (used as a formatter)
+   - `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` (Optional: If errors occur when running the web-app)
 2. Clone the project to a selected location
-  - `git clone https://github.com/vKekz/Link-Up.git`
+   - `git clone https://github.com/vKekz/Link-Up.git`
 3. Install dependencies
-  - `npm install`
+   - `npm install`
 4. Run web-application
-  - `ng serve --open` (optional: --open, opens the browser)
+   - `ng serve --open` (optional: --open, opens the browser)
