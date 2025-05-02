@@ -1,1 +1,191 @@
 /* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* ── PolySansTrial (proportional) ── */
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysanstrial-slim.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysansitalictrial-slimitalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysanstrial-neutral.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysansitalictrial-neutralitalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysanstrial-median.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysansitalictrial-medianitalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysanstrial-bulky.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial';
+    src: url('/assets/fonts/polysansitalictrial-bulkyitalic.otf') format('opentype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+
+/* ── PolySansTrial Mono (monospaced) ── */
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysanstrial-slimmono.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysansitalictrial-slimmonoitalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysanstrial-neutralmono.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysansitalictrial-neutralmonoitalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysanstrial-medianmono.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysansitalictrial-medianmonoitalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysanstrial-bulkymono.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Mono';
+    src: url('/assets/fonts/polysansitalictrial-bulkymonoitalic.otf') format('opentype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+
+/* ── PolySansTrial Wide (expanded) ── */
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysanstrial-slimwide.otf') format('opentype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysansitalictrial-slimwideitalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysanstrial-neutralwide.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysansitalictrial-neutralwideitalic.otf') format('opentype');
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysanstrial-medianwide.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysansitalictrial-medianwideitalic.otf') format('opentype');
+    font-weight: 500;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysanstrial-bulkywide.otf') format('opentype');
+    font-weight: 800;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'PolySansTrial Wide';
+    src: url('/assets/fonts/polysansitalictrial-bulkywideitalic.otf') format('opentype');
+    font-weight: 800;
+    font-style: italic;
+}
+
+* {
+    --color-palette-dark-teal: #05668D;
+    --color-palette-teal: #028090;
+    --color-pallete-light-teal: #00A896;
+    --color-palette-light-green: #02C39A;
+    --color-palette-cream: #F0F3BD;
+    --font-primary: 'Ubuntu', sans-serif;
+    /* proportional (normal) */
+    --font-secondary: 'PolySansTrial', sans-serif;
+    /* monospaced */
+    --font-secondary-mono: 'PolySansTrial Mono', monospace;
+    /* wide */
+    --font-secondary-wide: 'PolySansTrial Wide', sans-serif;
+}
+
