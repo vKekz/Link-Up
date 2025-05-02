@@ -21,3 +21,8 @@ Link Up is an [Angular](https://angular.dev/) and [SupaBase](https://supabase.co
    - `npm install`
 4. Run web-application
    - `ng serve --open` (optional: --open, opens the browser)
+
+**Additional commands:**
+1. Generate angular component
+    - Go to `components` folder: `cd src\app\components`
+    - `ng generate component {component-name e.g. profile-button}`
