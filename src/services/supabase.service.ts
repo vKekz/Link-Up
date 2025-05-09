@@ -1,10 +1,12 @@
 ﻿import { Injectable } from "@angular/core";
 import { AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
 import { environment } from "../environments/environment.production";
+import { Post } from '../interfaces/post.model';
 
 @Injectable({
   providedIn: "root",
 })
+
 /**
  * Represents the service that is used for Supabase API communication.
  *
@@ -12,6 +14,7 @@ import { environment } from "../environments/environment.production";
  */
 export class SupabaseService {
   private readonly supabaseClient?: SupabaseClient;
+  private readonly postsTable = 'posts';
 
   constructor() {
     if (this.supabaseClient) {
@@ -31,4 +34,35 @@ export class SupabaseService {
       },
     });
   }
+
+  // --- POSTS CRUD ---
+
+  public async getPosts() {
+    return await this.supabaseClient!
+      .from(this.postsTable)
+      .select('*')
+      .order('created_at', { ascending: false });
+  }
+
+  public async createPost(post: Post) {
+    return await this.supabaseClient!
+      .from(this.postsTable)
+      .insert([post]);
+  }
+
+  public async updatePost(id: string, updatedFields: Partial<Post>) {
+    return await this.supabaseClient!
+      .from(this.postsTable)
+      .update(updatedFields)
+      .eq('id', id);
+  }
+
+  public async deletePost(id: string) {
+    return await this.supabaseClient!
+      .from(this.postsTable)
+      .delete()
+      .eq('id', id);
+  }
 }
+
+
