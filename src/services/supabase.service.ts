@@ -1,6 +1,9 @@
 ﻿import { Injectable } from "@angular/core";
 import { AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
 import { environment } from "../environments/environment.production";
+import { GROUP_EVENTS_TABLE } from "../constants/supabase.constants";
+import { GroupEvent } from "../interfaces/entities/group-event";
+import { Group } from "../interfaces/entities/group";
 
 @Injectable({
   providedIn: "root",
@@ -30,5 +33,16 @@ export class SupabaseService {
         emailRedirectTo: environment.supabaseEmailRedirectTo,
       },
     });
+  }
+
+  public createGroupEvent(group: GroupEvent) {
+    this.supabaseClient?.from(GROUP_EVENTS_TABLE).insert(group);
+  }
+
+  public getGroupEventsByGroup(group: Group): GroupEvent[] {
+    // TODO: Get by group id
+    const groupId = group.id;
+    const selection = this.supabaseClient?.from(GROUP_EVENTS_TABLE).select();
+    return [];
   }
 }

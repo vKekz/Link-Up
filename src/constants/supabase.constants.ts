@@ -1,0 +1,1 @@
+export const GROUP_EVENTS_TABLE = "group-events";
