@@ -1,6 +1,27 @@
-<main class="main">
-  LinkUp
-  <app-nav-bar></app-nav-bar>
-</main>
 
-<router-outlet />
+<div class="app-container">
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar">
+    <ul>
+      <li routerLink="/map" routerLinkActive="active">🗺️ Map</li>
+      <li routerLink="/profile" routerLinkActive="active">👤 My Profile</li>
+      <li routerLink="/messages" routerLinkActive="active">💬 Messages</li>
+      <li routerLink="/events" routerLinkActive="active">📅 Events</li>
+      <li routerLink="/communities" routerLinkActive="active">🌐 Communities</li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Header -->
+    <header class="topbar">
+      <img src="https://via.placeholder.com/40" alt="User Avatar" class="avatar">
+    </header>
+
+    <!-- Routed Page Content -->
+    <main class="page-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+

@@ -1,0 +1,22 @@
+<div class="modal">
+  <div class="modal-content">
+    <h3>Event erstellen</h3>
+
+    <form (ngSubmit)="submitForm()" #f="ngForm">
+      <label for="title">Titel</label>
+      <input id="title" name="title" [(ngModel)]="event.title" required>
+
+      <label for="tag">Tag</label>
+      <input id="tag" name="tag" [(ngModel)]="event.tag">
+
+      <label for="address">Adresse</label>
+      <input id="address" name="address" [(ngModel)]="event.address" required>
+
+      <label for="description">Beschreibung</label>
+      <textarea id="description" name="description" [(ngModel)]="event.description" required></textarea>
+
+      <button type="submit">Erstellen</button>
+      <button type="button" (click)="cancel()">Abbrechen</button>
+    </form>
+  </div>
+</div>
