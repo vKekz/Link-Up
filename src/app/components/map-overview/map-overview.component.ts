@@ -19,7 +19,7 @@ export interface Marker {
 export class MapOverviewComponent implements AfterViewInit {
   private map!: L.Map;
   private markersData = signal<Marker[]>([
-    { lat: 51.505, lng: -0.09, title: 'London', description: 'Capital of England' },
+    { lat: 49.4738333, lng: 8.534333333333333 , title: 'DHBW Mannheim', description: 'Beschreibung Incoming' },
     { lat: 48.8566, lng: 2.3522, title: 'Paris', description: 'Capital of France' },
     { lat: 40.7128, lng: -74.006, title: 'New York', description: 'The Big Apple' }
   ]);
@@ -36,6 +36,20 @@ export class MapOverviewComponent implements AfterViewInit {
       center: [51.505, -0.09],
       zoom: 5
     });
+
+    //Limit map to germany
+    const germanyBounds = L.latLngBounds(
+      L.latLng(47.2701, 5.8663),  // Southwest corner
+      L.latLng(55.0992, 15.0419)  // Northeast corner
+    );
+    
+    this.map.setMaxBounds(germanyBounds);
+    this.map.on('drag', () => {
+      this.map.panInsideBounds(germanyBounds, { animate: true });
+    });
+    this.map.options.minZoom = 5;
+    // this.map.options.maxZoom = 10;
+
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       maxZoom: 19,
