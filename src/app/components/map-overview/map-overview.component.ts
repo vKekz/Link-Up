@@ -44,46 +44,46 @@ export class MapOverviewComponent implements AfterViewInit {
   }
 
   private addMarkers(): void {
-    const customIcon = L.icon({
-      iconUrl: 'assets/marker-icon.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowUrl: 'assets/marker-shadow.png',
-      shadowSize: [41, 41]
-    });
+    // const customIcon = L.icon({
+    //   iconUrl: 'assets/marker-icon.png',
+    //   iconSize: [25, 41],
+    //   iconAnchor: [12, 41],
+    //   popupAnchor: [1, -34],
+    //   shadowUrl: 'assets/marker-shadow.png',
+    //   shadowSize: [41, 41]
+    // });
     
-    this.markersData().forEach(marker => {
-      const leafletMarker = L.marker([marker.lat, marker.lng], { icon: customIcon })
-        .addTo(this.map);
+    // this.markersData().forEach(marker => {
+    //   const leafletMarker = L.marker([marker.lat, marker.lng], { icon: customIcon })
+    //     .addTo(this.map);
         
-      leafletMarker.bindPopup(`
-        <div class="marker-popup">
-          <h3>${marker.title}</h3>
-          <p>${marker.description}</p>
-          <button class="btn-details" data-marker-title="${marker.title}">
-            More Details
-          </button>
-        </div>
-      `);
+    //   leafletMarker.bindPopup(`
+    //     <div class="marker-popup">
+    //       <h3>${marker.title}</h3>
+    //       <p>${marker.description}</p>
+    //       <button class="btn-details" data-marker-title="${marker.title}">
+    //         More Details
+    //       </button>
+    //     </div>
+    //   `);
       
-      // Handle popup open to register click events on the button
-      leafletMarker.on('popupopen', () => {
-        setTimeout(() => {
-          const popupContent = leafletMarker.getPopup()?.getElement();
-          const detailButton = popupContent?.querySelector('.btn-details');
+    //   // Handle popup open to register click events on the button
+    //   leafletMarker.on('popupopen', () => {
+    //     setTimeout(() => {
+    //       const popupContent = leafletMarker.getPopup()?.getElement();
+    //       const detailButton = popupContent?.querySelector('.btn-details');
           
-          if (detailButton) {
-            detailButton.addEventListener('click', () => {
-              const title = detailButton.getAttribute('data-marker-title');
-              if (title) {
-                this.markerClicked.emit(title);
-              }
-            }, { once: true });
-          }
-        }, 0);
-      });
-    });
+    //       if (detailButton) {
+    //         detailButton.addEventListener('click', () => {
+    //           const title = detailButton.getAttribute('data-marker-title');
+    //           if (title) {
+    //             this.markerClicked.emit(title);
+    //           }
+    //         }, { once: true });
+    //       }
+    //     }, 0);
+    //   });
+    // });
   }
   
   public addNewMarker(marker: Marker): void {
