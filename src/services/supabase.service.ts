@@ -18,7 +18,7 @@ export class SupabaseService {
       return;
     }
 
-    this.supabaseClient = createClient(environment.supabaseUrl!, environment.supabaseKey!);
+    this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
   }
 
   // Example usage for signing up a user.
