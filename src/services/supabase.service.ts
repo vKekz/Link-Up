@@ -1,6 +1,8 @@
 ﻿import { Injectable } from "@angular/core";
-import { AuthResponse, createClient, SupabaseClient } from "@supabase/supabase-js";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { environment } from "../environments/environment.production";
+import { ControllerNotInitializedException } from "../exceptions/controller-not-initialized.exception";
+import { UserController } from "../controller/user.controller";
 
 @Injectable({
   providedIn: "root",
@@ -9,9 +11,12 @@ import { environment } from "../environments/environment.production";
  * Represents the service that is used for Supabase API communication.
  *
  * See https://supabase.com/docs/reference/javascript/start
+ *
+ * @remarks With the following comment some issues were resolved: https://github.com/supabase/supabase-js/issues/936#issuecomment-2691252604
  */
 export class SupabaseService {
   private readonly supabaseClient?: SupabaseClient;
+  private readonly userController?: UserController;
 
   constructor() {
     if (this.supabaseClient) {
@@ -19,16 +24,14 @@ export class SupabaseService {
     }
 
     this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
+    this.userController = new UserController(this.supabaseClient);
   }
 
-  // Example usage for signing up a user.
-  public signUpUser(email: string, password: string): Promise<AuthResponse> | undefined {
-    return this.supabaseClient?.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        emailRedirectTo: environment.supabaseEmailRedirectTo,
-      },
-    });
+  public getUserController(): UserController {
+    if (!this.userController) {
+      throw new ControllerNotInitializedException(`${UserController.name} not initialized`);
+    }
+
+    return this.userController;
   }
 }

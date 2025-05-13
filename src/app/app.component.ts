@@ -8,6 +8,4 @@ import { RouterOutlet } from "@angular/router";
   styleUrl: "./app.component.css",
   standalone: true,
 })
-export class AppComponent {
-  constructor() {}
-}
+export class AppComponent {}

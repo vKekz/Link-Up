@@ -25,5 +25,15 @@ export class UserRegistrationFormComponent {
     this.password = target.value;
   }
 
-  registerUser() {}
+  handleSubmit() {
+    this.registerUser();
+  }
+
+  registerUser() {
+    if (!this.email || !this.password) {
+      return;
+    }
+
+    console.log(this.supabaseService.getUserController().signUpUser(this.email, this.password));
+  }
 }
