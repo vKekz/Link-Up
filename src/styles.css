@@ -174,7 +174,7 @@
     font-style: italic;
 }
 
-* {
+:root {
     --color-palette-dark-teal: #05668D;
     --color-palette-teal: #028090;
     --color-palette-light-teal: #00A896;
