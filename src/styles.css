@@ -180,6 +180,11 @@
     --color-pallete-light-teal: #00A896;
     --color-palette-light-green: #02C39A;
     --color-palette-cream: #F0F3BD;
+    --color-palette-white: #FDFDFD;
+    --colro-palette-dark-gray: #374151ff;
+    --color-palette-gray: #efefefff;
+    --color-palette-light-gray: #eaedf0ff;
+    --color-palette-light-yellow: #E4ECBA
     --font-primary: 'Ubuntu', sans-serif;
     /* proportional (normal) */
     --font-secondary: 'PolySansTrial', sans-serif;
