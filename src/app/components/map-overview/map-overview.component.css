@@ -1,6 +1,12 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
 .map-container {
   position: relative;
-  height: 500px;
+  height: 100vh; /* Feste Höhe, ändere auf z.B. 100% für vollständig responsive Höhe */
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
@@ -9,10 +15,12 @@
 
 .map-frame {
   height: 100%;
+  width: 100%;
 }
 
 #map {
   height: 100%;
+  width: 100%;
 }
 
 .marker-popup h3 {

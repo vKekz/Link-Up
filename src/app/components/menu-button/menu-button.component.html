@@ -1,0 +1,19 @@
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=close" />
+<div class="menu-container">
+  <button class="menu-dropdown" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()">
+    <span class="material-symbols-outlined" [style.transform]="isHovered ? 'rotate(0deg)' : 'rotate(135deg)'">
+      close
+    </span>
+  </button>
+  <div
+    class="menu-content"
+    (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()"
+    [style]="{ visibility: isHovered ? 'visible' : 'hidden' }"
+  >
+    <button class="menu-buttons" id="editProfileBtn">Neuer Post</button>
+    <button class="menu-buttons" id="changePasswordBtn">Platz 2</button>
+    <button class="menu-buttons" id="changeEmailBtn">Platz 3</button>
+    <button class="menu-buttons" id="signOutBtn">Platz 4</button>
+  </div>
+</div>
