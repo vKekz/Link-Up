@@ -1,0 +1,14 @@
+<div class="user-registration-container">
+  <label for="email">E-Mail:</label>
+  <input (keyup)="handleMailInput($event)" type="email" name="email" id="email" placeholder="Deine E-Mail" />
+  <label for="password">Passwort:</label>
+  <input
+    (keyup)="handlePasswordInput($event)"
+    type="password"
+    name="password"
+    id="password"
+    placeholder="Dein Passwort"
+  />
+  <button (click)="handleSubmit()">Registrieren</button>
+</div>
+{{ JSON.stringify(this.response()) }}
