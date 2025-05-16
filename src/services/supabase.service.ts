@@ -2,7 +2,7 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { environment } from "../environments/environment.production";
 import { ControllerNotInitializedException } from "../exceptions/controller-not-initialized.exception";
-import { UserController } from "../controller/user.controller";
+import { UserController } from "../controllers/user/user.controller";
 
 @Injectable({
   providedIn: "root",
@@ -15,7 +15,7 @@ import { UserController } from "../controller/user.controller";
  * @remarks With the following comment some issues were resolved: https://github.com/supabase/supabase-js/issues/936#issuecomment-2691252604
  */
 export class SupabaseService {
-  private readonly supabaseClient?: SupabaseClient;
+  public readonly supabaseClient?: SupabaseClient;
   private readonly userController?: UserController;
 
   constructor() {
