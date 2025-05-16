@@ -6,7 +6,7 @@
 
 .map-container {
   position: relative;
-  height: 700px; /* Feste Höhe, ändere auf z.B. 100% für vollständig responsive Höhe */
+  height: 100vh; /* Feste Höhe, ändere auf z.B. 100% für vollständig responsive Höhe */
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
