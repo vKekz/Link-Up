@@ -11,37 +11,15 @@ import { Post } from "../../../interfaces/post.model";
 export class PostComponent implements OnInit {
   posts: Post[] = [];
 
-  newPost: Post = {
-    title: "Testeintrag",
-    description: "Dies ist ein Testeintrag aus Angular",
-    tags: ["test", "angular"],
-    creator_id: "demo-user-id",
-    join_policy: "open",
-  };
-
   userId = "demo-user-id";
   userAge = 16;
   errorMessage = "";
 
   constructor(private readonly supabaseService: SupabaseService) {}
 
-  ngOnInit(): void {
-    console.log(this.loadPosts());
-  }
-
-  async loadPosts() {
-    try {
-      const result = await this.supabaseService.getPostController().getPosts();
-      if (result.error) {
-        console.error("Fehler beim Laden:", result.error);
-        this.errorMessage = "Beiträge konnten nicht geladen werden.";
-        return;
-      }
-      this.posts = result.data || [];
-    } catch (err) {
-      console.error("Unerwarteter Fehler:", err);
-      this.errorMessage = "Ein unerwarteter Fehler ist aufgetreten.";
-    }
+  async ngOnInit() {
+    const posts = await this.supabaseService.getPostController().getPosts();
+    console.log(posts[0].id)
   }
 
   async addTestPost() {
@@ -53,13 +31,12 @@ export class PostComponent implements OnInit {
       join_policy: "open",
     };
 
-    const result = await this.supabaseService.getPostController().createPost(testPost);
-    if (result.error) {
-      console.error("Fehler beim Einfügen:", result.error);
-      return;
-    }
+    // const result = await this.supabaseService.getPostController().createPost(testPost);
+    // if (result.error) {
+    //   console.error("Fehler beim Einfügen:", result.error);
+    //   return;
+    // }
 
-    console.log("Post erfolgreich erstellt:", result.data);
-    await this.loadPosts(); // aktualisiere die Liste
+    // console.log("Post erfolgreich erstellt:", result.data);
   }
 }

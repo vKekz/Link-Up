@@ -1,1 +1,49 @@
-<p>post works!</p>
+<h1>Event Manager</h1>
+<!--https://alibaba-cloud.medium.com/how-to-build-a-modern-web-app-to-manage-events-with-adonisjs-and-react-4701680d6410-->
+<form>
+  <div class="form-group">
+    <input
+      id="title"
+      name="title"
+      class="form-control"
+      placeholder="Name des Events"
+      required
+    />
+  </div>
+    <br>
+  <div class="form-group">
+    <input
+      id="address"
+      name="address"
+      class="form-control"
+      placeholder="Adresse"
+    />
+  </div>
+    <br>
+  <div class="form-group">
+    <input
+      id="tags"
+      name="tags"
+      class="form-control"
+      placeholder="Tags #"
+    />
+  </div>
+    <br>
+  <div class="form-group">
+    <textarea
+      id="description"
+      name="description"
+      class="form-control"
+      placeholder="Beschreibung"
+    ></textarea>
+  </div>
+    <br>
+    <div class="form-group">
+        <label for="join">Öffen für alle:</label>
+        <input type ="checkbox">
+    </div>
+  <button type="submit" class="btn btn-primary">Erstellen</button>
+
+  <button>Löschen</button>
+
+</form>

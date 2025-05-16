@@ -1,11 +1,12 @@
 import { ApiController } from "../api-controller";
-import { Post } from "../../interfaces/post.model";
+import { Post } from "../../models/post.model";
 
 export class PostController extends ApiController {
   private readonly postsTable = "posts";
 
-  public async getPosts() {
-    return this.supabaseClient.from(this.postsTable).select().order("created_at", { ascending: false });
+  public async getPosts(): Promise<Post[]> {
+    const response = await this.supabaseClient.from(this.postsTable).select().order("created_at", { ascending: false });
+    return response.data as Post[];
   }
 
   public async createPost(post: Post) {
