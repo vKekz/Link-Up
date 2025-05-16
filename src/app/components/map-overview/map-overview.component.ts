@@ -27,10 +27,19 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   @Output() markerClicked = new EventEmitter<string>();
 
   ngAfterViewInit(): void {
-  
     console.log("NG after view init");
     this.initMap();
     this.addMarkers();
+
+    // Zusätzliche Map-Resize-Behandlung für verschiedene Fälle
+    setTimeout(() => {
+      this.resizeMap();
+    }, 200);
+
+    // Bei Änderung der Fenstergröße Map neu berechnen
+    window.addEventListener("resize", () => {
+      this.resizeMap();
+    });
   }
   ngOnDestroy(): void {
     console.log("NG on destroy");
@@ -40,7 +49,6 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  
   private initMap(): void {
     if (this.map) {
       return;
@@ -50,6 +58,13 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       center: [51.505, -0.09],
       zoom: 5,
     });
+
+    // Wichtig: Karte invalidieren, damit sie sich an das Container-Element anpasst
+    setTimeout(() => {
+      if (this.map) {
+        this.map.invalidateSize();
+      }
+    }, 100);
 
     //Limit map to germany
     const germanyBounds = L.latLngBounds(
@@ -175,5 +190,11 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
 
   public getMarkers(): Marker[] {
     return this.markersData();
+  }
+
+  private resizeMap(): void {
+    if (this.map) {
+      this.map.invalidateSize();
+    }
   }
 }
