@@ -4,27 +4,23 @@ import { MapOverviewComponent } from "./components/map-overview/map-overview.com
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, MapOverviewComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
   standalone: true,
 })
 export class AppComponent {
-  title = 'OpenStreetMap with Angular';
+  title = "OpenStreetMap with Angular";
   @ViewChild(MapOverviewComponent) mapComponent!: MapOverviewComponent;
 
   newMarker = {
     lat: null as number | null,
     lng: null as number | null,
-    title: '',
-    description: ''
+    title: "",
+    description: "",
   };
 
-  existingMarkers = signal([
-    { title: 'London' },
-    { title: 'Paris' },
-    { title: 'New York' }
-  ]);
+  existingMarkers = signal([{ title: "London" }, { title: "Paris" }, { title: "New York" }]);
 
   addMarker(): void {
     if (this.newMarker.lat && this.newMarker.lng && this.newMarker.title) {
@@ -32,21 +28,18 @@ export class AppComponent {
         lat: this.newMarker.lat,
         lng: this.newMarker.lng,
         title: this.newMarker.title,
-        description: this.newMarker.description || 'No description provided'
+        description: this.newMarker.description || "No description provided",
       });
 
       // Add to existing markers list
-      this.existingMarkers.update(markers => [
-        ...markers,
-        { title: this.newMarker.title }
-      ]);
+      this.existingMarkers.update((markers) => [...markers, { title: this.newMarker.title }]);
 
       // Reset form
       this.newMarker = {
         lat: null,
         lng: null,
-        title: '',
-        description: ''
+        title: "",
+        description: "",
       };
     }
   }
