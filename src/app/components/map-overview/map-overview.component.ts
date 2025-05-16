@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, Output, EventEmitter, signal } from "@angular/core";
+import { Component, AfterViewInit, Output, EventEmitter, signal, OnDestroy } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import * as L from "leaflet";
 
@@ -16,7 +16,7 @@ export interface Marker {
   templateUrl: "./map-overview.component.html",
   styleUrls: ["./map-overview.component.css"],
 })
-export class MapOverviewComponent implements AfterViewInit {
+export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markersData = signal<Marker[]>([
     { lat: 49.4738333, lng: 8.534333333333333, title: "DHBW Mannheim", description: "Beschreibung Incoming" },
@@ -27,10 +27,20 @@ export class MapOverviewComponent implements AfterViewInit {
   @Output() markerClicked = new EventEmitter<string>();
 
   ngAfterViewInit(): void {
+  
+    console.log("NG after view init");
     this.initMap();
     this.addMarkers();
   }
+  ngOnDestroy(): void {
+    console.log("NG on destroy");
+    if (this.map) {
+      this.map.off();
+      this.map.remove();
+    }
+  }
 
+  
   private initMap(): void {
     if (this.map) {
       return;
