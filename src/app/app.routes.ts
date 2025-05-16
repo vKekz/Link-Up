@@ -4,9 +4,11 @@ import { AppComponent } from "./app.component";
 import { UserLoginFormComponent } from "./components/user-login-form/user-login-form.component";
 import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
 
 export const routes: Routes = [
   { path: "", component: AppComponent, pathMatch: "full" },
+  { path: "dashboard", component: DashboardComponent, pathMatch: "full" },
   { path: "sidebar", component: SidebarComponent, pathMatch: "full"},
   { path: "map", component: MapOverviewComponent, pathMatch: "full" },
   { path: "register", component: UserRegistrationFormComponent, pathMatch: "full" },
