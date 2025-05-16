@@ -8,7 +8,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:Link-Up": "node dist/link-up/server/server.mjs",
-    "supabase:typegen": "supabase gen types --lang=typescript --schema public --project-id 'ozripaimufzauubmaybf' --schema public > src/app/types/supabase.types.ts"
+    "supabase:typegen": "supabase gen types --lang=typescript --schema public --project-id 'ozripaimufzauubmaybf' > src/app/types/supabase.types.ts"
   },
   "private": true,
   "dependencies": {
