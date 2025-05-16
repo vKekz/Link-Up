@@ -3,9 +3,11 @@ import { UserRegistrationFormComponent } from "./components/user-registration-fo
 import { AppComponent } from "./app.component";
 import { UserLoginFormComponent } from "./components/user-login-form/user-login-form.component";
 import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
+import { SidebarComponent } from "./components/sidebar/sidebar.component";
 
 export const routes: Routes = [
   { path: "", component: AppComponent, pathMatch: "full" },
+  { path: "sidebar", component: SidebarComponent, pathMatch: "full"},
   { path: "map", component: MapOverviewComponent, pathMatch: "full" },
   { path: "register", component: UserRegistrationFormComponent, pathMatch: "full" },
   { path: "login", component: UserLoginFormComponent, pathMatch: "full" },
