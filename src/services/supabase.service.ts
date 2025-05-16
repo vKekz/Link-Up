@@ -35,14 +35,35 @@ export class SupabaseService {
     });
   }
 
-  public createGroupEvent(group: GroupEvent) {
-    this.supabaseClient?.from(GROUP_EVENTS_TABLE).insert(group);
+  public async createGroupEvent(groupEvent: GroupEvent): Promise<void> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+    const { error } = await this.supabaseClient
+      .from(GROUP_EVENTS_TABLE)
+      .insert(groupEvent);
+
+    if (error) {
+      throw new Error(`Failed to create group event: ${error.message}`);
+    }
   }
 
-  public getGroupEventsByGroup(group: Group): GroupEvent[] {
-    // TODO: Get by group id
-    const groupId = group.id;
-    const selection = this.supabaseClient?.from(GROUP_EVENTS_TABLE).select();
-    return [];
+  public async getGroupEventsByGroup(group: Group): Promise<GroupEvent[]> {
+    if (!this.supabaseClient) {
+      throw new Error("Supabase client not initialized");
+    }
+
+   const { data, error } = await this.supabaseClient
+      .from(GROUP_EVENTS_TABLE)
+      .select('*')
+      .eq('group_id', group.id);
+
+    if (error) {
+      throw new Error(`Failed to fetch group events: ${error.message}`);
+    }
+
+    return data as GroupEvent[];
   }
+  
 }
