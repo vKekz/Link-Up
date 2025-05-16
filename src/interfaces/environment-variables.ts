@@ -10,12 +10,12 @@ export interface EnvironmentVariables {
   /**
    * Project URL for the Supabase API.
    */
-  supabaseUrl?: string;
+  supabaseUrl: string;
 
   /**
    * Project API Key for the Supabase API.
    */
-  supabaseKey?: string;
+  supabaseKey: string;
 
   /**
    * Redirect URL that is used when signing up or in a user.
