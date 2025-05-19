@@ -9,46 +9,122 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "group-events": {
+      post_chat: {
         Row: {
-          id: number
+          created_at: string
+          id: string
+          post_id: string | null
+          profile_photo: string | null
+          title: string | null
         }
         Insert: {
-          id?: number
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          profile_photo?: string | null
+          title?: string | null
         }
         Update: {
-          id?: number
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          profile_photo?: string | null
+          title?: string | null
         }
         Relationships: []
       }
-      posts: {
+      post_chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string | null
+          post_chat_id: string | null
+          sender_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          post_chat_id?: string | null
+          sender_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string | null
+          post_chat_id?: string | null
+          sender_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_chat_messages_post_chat_id_fkey"
+            columns: ["post_chat_id"]
+            isOneToOne: false
+            referencedRelation: "post_chat"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_participants: {
         Row: {
           created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_participants_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      posts: {
+        Row: {
+          created_at: string
           creator_id: string
           description: string | null
+          geo_location: unknown | null
           id: string
-          join_policy: string | null
-          participants: string[] | null
+          location: string | null
+          open_to_join: boolean
           tags: string[] | null
           title: string
         }
         Insert: {
-          created_at?: string | null
-          creator_id: string
+          created_at?: string
+          creator_id?: string
           description?: string | null
+          geo_location?: unknown | null
           id?: string
-          join_policy?: string | null
-          participants?: string[] | null
+          location?: string | null
+          open_to_join?: boolean
           tags?: string[] | null
           title: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           creator_id?: string
           description?: string | null
+          geo_location?: unknown | null
           id?: string
-          join_policy?: string | null
-          participants?: string[] | null
+          location?: string | null
+          open_to_join?: boolean
           tags?: string[] | null
           title?: string
         }

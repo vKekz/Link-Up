@@ -1,0 +1,18 @@
+<div class="sidebar">
+  <h1 class="logo">Chats</h1>
+  <hr class="divider" />
+  <h2 class="section-title">Active Events</h2>
+  <ul class="event-list">
+    <li class="event-item" *ngFor="let event of events">
+      <img [src]="event.image" [alt]="event.title" class="event-avatar" />
+      <div class="event-details">
+        <span class="event-title">{{ event.title }}</span>
+        <span class="event-subtitle">{{ event.subtitle }}</span>
+      </div>
+      <div class="event-meta">
+        <span class="event-time">{{ event.time }}</span>
+        <span class="event-count" *ngIf="event.count > 0">{{ event.count }}</span>
+      </div>
+    </li>
+  </ul>
+</div> 
