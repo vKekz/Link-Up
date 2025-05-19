@@ -21,6 +21,10 @@
   --font-secondary-wide: "PolySansTrial Wide", sans-serif;
 }
 
+body {
+  background-color: var(--color-palette-dark-gray);
+}
+
 /* ── PolySansTrial (proportional) ── */
 @font-face {
   font-family: "PolySansTrial";
