@@ -25,7 +25,7 @@ export class UserController extends ApiController {
       id: response.data.user?.id,
       error: response.error?.code,
       message: response.error?.message,
-    };
+    } as UserRegistrationResponse;
   }
 
   /**
@@ -42,6 +42,6 @@ export class UserController extends ApiController {
     return {
       id: response.data.user?.id,
       error: response.error?.code,
-    };
+    } as UserLoginResponse;
   }
 }

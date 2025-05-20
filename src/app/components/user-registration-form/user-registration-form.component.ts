@@ -4,9 +4,7 @@ import { UserRegistrationResponse } from "../../../contracts/user/user-registrat
 
 @Component({
   selector: "app-user-registration-form",
-  imports: [],
   templateUrl: "./user-registration-form.component.html",
-  standalone: true,
   styleUrl: "./user-registration-form.component.css",
 })
 export class UserRegistrationFormComponent {
