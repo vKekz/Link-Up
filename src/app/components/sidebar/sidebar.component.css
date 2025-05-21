@@ -2,12 +2,12 @@
     position: relative;
     height: 100vh;
     width: 20vw;
-    background-color: var(--color-palette-light-yellow);
+    background-color: var(--color-palette-light-green);
 }
 .sidebarLinkBox {
     display: flex;
     flex-direction: column;
-    row-gap: 10vh;
+    justify-content:space-evenly;
     position: absolute;
     top: 3vh;
     left: 50%;
@@ -15,17 +15,55 @@
     height: 75vh;
     width: 18vw;
     background-color: var(--color-palette-cream);
+    border-radius: 5px;
+}
+.sidebarLinks:hover > .sidebarLink{
+    font-size: 32px;
+   
 }
 .sidebarLink {
     text-decoration: none;
     color: black;
+    font-family: var(--font-primary);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    transition: font-size 100ms;
 }
 .sidebarProfileBox {
     position: absolute;
+    display: flex;
     bottom: 3vh;
     left: 50%;
     transform: translateX(-50%);
     height: 10vh;
     width: 18vw;
     background-color: var(--color-palette-cream);
+    border-radius: 5px;
+}
+.profileButton {
+    width: 10vw;
+    margin: 2vh;
+    display: flex;
+    flex-direction: row;
+    background-color: gray;
+    border: none;
+    cursor: pointer;
+}
+.profileButton p {
+    font-family: var(--font-primary);
+}
+.settingsButton {
+    width: 4vw;
+    margin: 2vh;
+    background-color: gray;
+    border: none;
+    cursor: pointer;
+}
+.settingsButton:hover > .settingsWheel{
+    transform: rotateZ(360deg);
+}
+.settingsWheel {
+    transition: transform 1s;
 }
