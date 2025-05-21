@@ -2,6 +2,7 @@
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserLoginResponse } from "../../../contracts/user/user-login.response";
 import { Router } from "@angular/router";
+import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
 
 @Component({
   selector: "app-user-login-form",
@@ -41,7 +42,7 @@ export class UserLoginFormComponent {
 
     const response = await this.supabaseService.getUserController().signInUser(this.email, this.password);
     if (!response.error) {
-      await this.router.navigate(["/"]);
+      await this.router.navigate(["/", ROUTE_DASHBOARD]);
       return;
     }
 

@@ -45,4 +45,8 @@ export class UserController extends ApiController {
       message: response.error?.message,
     } as UserLoginResponse;
   }
+
+  public async signOut() {
+    await this.supabaseClient.auth.signOut();
+  }
 }

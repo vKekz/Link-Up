@@ -1,6 +1,8 @@
 import { Component, signal, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserRegistrationResponse } from "../../../contracts/user/user-registration.response";
+import { Router } from "@angular/router";
+import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
 
 @Component({
   selector: "app-user-registration-form",
@@ -15,7 +17,10 @@ export class UserRegistrationFormComponent {
   protected password?: string;
   protected hasTriedSubmit: boolean = false;
 
-  constructor(protected readonly supabaseService: SupabaseService) {
+  constructor(
+    protected readonly supabaseService: SupabaseService,
+    private readonly router: Router
+  ) {
     this.response = signal(undefined);
   }
 
@@ -35,6 +40,11 @@ export class UserRegistrationFormComponent {
     }
 
     const response = await this.supabaseService.getUserController().signUpUser(this.email, this.password);
+    if (!response.error) {
+      await this.router.navigate(["/", ROUTE_DASHBOARD]);
+      return;
+    }
+
     this.response.set(response);
   }
 
