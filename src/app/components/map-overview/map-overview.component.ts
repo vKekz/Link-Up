@@ -2,7 +2,6 @@ import { Component, AfterViewInit, Output, EventEmitter, signal, OnDestroy } fro
 import { CommonModule } from "@angular/common";
 import * as L from "leaflet";
 
-
 export interface Marker {
   lat: number;
   lng: number;
@@ -24,7 +23,13 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     { lat: 48.8566, lng: 2.3522, title: "Paris", description: "Capital of France" },
     { lat: 40.7128, lng: -74.006, title: "New York", description: "The Big Apple" },
   ]);
-  private locationMarker: L.Circle | null = null;
+  private locationMarker: L.LayerGroup | null = null;
+  
+  // Status-Variablen für die Standortverfolgung
+  private isLocating = false;
+  private locationErrorCount = 0;
+  private maxLocationErrors = 3;
+  private lastLocationFound = false;
 
   @Output() markerClicked = new EventEmitter<string>();
 
@@ -42,7 +47,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     window.addEventListener("resize", () => {
       this.resizeMap();
     });
-  }  ngOnDestroy(): void {
+  }
+  
+  ngOnDestroy(): void {
     console.log("NG on destroy");
     // Event-Listener für Fenstergröße entfernen
     window.removeEventListener('resize', this.resizeMap);
@@ -59,7 +66,6 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     if (this.map) {
       return;
     }
-
     
     this.map = L.map("map", {
       center: [51.505, -0.09],
@@ -200,58 +206,197 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.map?.flyTo([marker.lat, marker.lng], 10);
     }
   }
-
+  
   public getMarkers(): Marker[] {
     return this.markersData();
-  }  // Benutzerstandort lokalisieren und anzeigen
+  }
+  
+  // Benutzerstandort lokalisieren und anzeigen
   private locateUser(): void {
     if (!this.map) return;
 
-    // Bestehende Standortverfolgung entfernen (falls vorhanden)
+    // Entferne eventuelle bestehende Lokalisierungs-Event-Handler
+    this.map.off('locationfound');
+    this.map.off('locationerror');
+
+    // Entferne den bestehenden Standortmarker, falls vorhanden
     if (this.locationMarker) {
       this.map.removeLayer(this.locationMarker);
+      this.locationMarker = null;
     }
 
-    // Mit watch: true für kontinuierliche Verfolgung
+    // Zeige Lade-Animation an
+    this.showLocatingAnimation();
+
+    // Standortverfolgung starten mit verbesserten Optionen
+    this.isLocating = true;
     this.map.locate({ 
       setView: true, 
       maxZoom: 16, 
-      watch: true,     // Kontinuierliche Aktualisierung
-      enableHighAccuracy: true,
-      timeout: 10000
-    }).on('locationfound', (e: L.LocationEvent) => {
-        // Wenn bereits ein Marker existiert, entfernen
-        if (this.locationMarker) {
-          this.map?.removeLayer(this.locationMarker);
-        }
+      watch: true,              // Kontinuierliche Aktualisierung
+      enableHighAccuracy: true, // Hochpräzise Standortbestimmung aktivieren
+      timeout: 10000,           // Mittlerer Timeout (10 Sekunden) pro Versuch
+      maximumAge: 5000,         // Akzeptiere Standortdaten, die nicht älter als 5 Sekunden sind
+    });
 
-        // Radius für die Genauigkeit (accuracy)
-        const radius = e.accuracy;
+    // Event-Handler für gefundenen Standort
+    this.map.on('locationfound', (e: L.LocationEvent) => {
+      // Entferne Lade-Animation
+      this.hideLocatingAnimation();
+      this.lastLocationFound = true;
+      this.locationErrorCount = 0;
+      
+      console.log('Standort gefunden:', e.latlng, 'Genauigkeit:', e.accuracy);
+      
+      // Entferne den bestehenden Standortmarker, falls vorhanden
+      if (this.locationMarker) {
+        this.map?.removeLayer(this.locationMarker);
+        this.locationMarker = null;
+      }
+
+      // Radius für die Genauigkeit (accuracy) - mit sinnvoller Obergrenze
+      const radius = Math.min(e.accuracy, 500); // Begrenze den Radius auf 500 Meter
+      
+      // LayerGroup für beide Kreise erstellen
+      const locGroup = L.layerGroup();
+      
+      // Äußerer, transparenter Genauigkeitskreis
+      L.circle(e.latlng, {
+        radius: radius,
+        color: 'var(--color-palette-light-teal)',
+        fillColor: 'var(--color-palette-light-teal)',
+        fillOpacity: 0.15,
+        weight: 1
+      }).addTo(locGroup);
+      
+      // Pulsierende Animation für den inneren Standortkreis
+      const innerRadius = Math.min(radius * 0.15, 15); // Kleinerer Kreis, max 15 Meter
+      
+      // Innerer, dunklerer Standortkreis
+      const innerCircle = L.circle(e.latlng, {
+        radius: innerRadius,
+        color: 'var(--color-palette-dark-teal)',
+        fillColor: 'var(--color-palette-teal)',
+        fillOpacity: 0.8,
+        weight: 2,
+        className: 'location-marker-inner' // Klasse für CSS-Animation
+      }).addTo(locGroup);
+      
+      // LayerGroup zur Karte hinzufügen und als locationMarker speichern
+      locGroup.addTo(this.map!);
+      this.locationMarker = locGroup;
+      
+      // Update der Location Button-Anzeige, um zu zeigen, dass Standort aktiv ist
+      this.updateLocationButtonState(true);
+    });
+    
+    // Event-Handler für Fehler bei der Standortbestimmung
+    this.map.on('locationerror', (e: L.ErrorEvent) => {
+      this.locationErrorCount++;
+      
+      console.error(`Standortbestimmung fehlgeschlagen (${this.locationErrorCount}/${this.maxLocationErrors}):`, e.message);
+      
+      // Nur wenn wir noch keinen Standort hatten oder nach mehreren Fehlern zeigen wir eine Meldung an
+      if (!this.lastLocationFound || this.locationErrorCount >= this.maxLocationErrors) {
+        // Entferne Lade-Animation
+        this.hideLocatingAnimation();
         
-        // Äußerer, transparenter Genauigkeitskreis
-        const accuracyCircle = L.circle(e.latlng, {
-          radius: radius,
-          color: 'var(--color-palette-light-teal)',
-          fillColor: 'var(--color-palette-light-teal)',
-          fillOpacity: 0.2,
-          weight: 1
-        }).addTo(this.map!);
+        // Visuelle Rückmeldung auf der Karte
+        this.showLocationErrorMessage();
         
-        // Innerer, dunklerer Standortkreis
-        const centerCircle = L.circle(e.latlng, {
-          radius: Math.min(radius * 0.15, 15), // Kleinerer Kreis, max 15 Meter
-          color: 'var(--color-palette-dark-teal)',
-          fillColor: 'var(--color-palette-teal)',
-          fillOpacity: 0.7,
-          weight: 2
-        }).addTo(this.map!);
+        // Bei mehrfachen Fehlern: Stoppe die Standortverfolgung kurz und versuche es dann erneut
+        if (this.isLocating) {
+          if (this.map) {
+            this.map.stopLocate();
+          }
+          this.isLocating = false;
+          
+          // Versuche es nach einer Pause erneut
+          setTimeout(() => {
+            if (this.locationErrorCount >= this.maxLocationErrors) {
+              this.locationErrorCount = 0;
+            }
+            this.locateUser();
+          }, 5000); // Kürzere Wartezeit für bessere Benutzererfahrung
+        }
         
-        // Beide Kreise als eine Gruppe behandeln
-        this.locationMarker = L.layerGroup([accuracyCircle, centerCircle]) as any;
-      })
-      .on('locationerror', (e: L.ErrorEvent) => {
-        console.error("Standortbestimmung fehlgeschlagen:", e.message);
-      });
+        // Update der Location Button-Anzeige
+        this.updateLocationButtonState(false);
+      }
+    });
+  }
+  
+  // Hilfsmethode: Zeigt eine Ladeanimation für die Standortsuche an
+  private showLocatingAnimation(): void {
+    const container = L.DomUtil.get('map');
+    if (!container) return;
+    
+    // Entferne vorhandene Animation falls vorhanden
+    this.hideLocatingAnimation();
+    
+    // Erstelle das Lade-Element
+    const loadingElement = L.DomUtil.create('div', 'location-loading-animation');
+    loadingElement.id = 'locationLoadingAnimation';
+    loadingElement.innerHTML = `
+      <div class="location-spinner">
+        <div class="spinner"></div>
+        <p>Suche Standort...</p>
+      </div>
+    `;
+    
+    container.appendChild(loadingElement);
+  }
+  
+  // Hilfsmethode: Entfernt die Ladeanimation
+  private hideLocatingAnimation(): void {
+    const container = L.DomUtil.get('map');
+    const loadingElement = document.getElementById('locationLoadingAnimation');
+    if (container && loadingElement && container.contains(loadingElement)) {
+      container.removeChild(loadingElement);
+    }
+  }
+  
+  // Hilfsmethode: Zeigt eine Fehlermeldung bei Standortproblemen an
+  private showLocationErrorMessage(): void {
+    const container = L.DomUtil.get('map');
+    if (!container) return;
+    
+    // Entferne vorhandene Fehlermeldung falls vorhanden
+    const existingError = document.getElementById('locationErrorMessage');
+    if (existingError && container.contains(existingError)) {
+      container.removeChild(existingError);
+    }
+    
+    // Erstelle die Fehlermeldung
+    const errorMsg = L.DomUtil.create('div', 'location-error-message');
+    errorMsg.id = 'locationErrorMessage';
+    errorMsg.innerHTML = `
+      <div class="error-container">
+        <strong>Standortbestimmung nicht möglich</strong>
+        <p>Bitte überprüfe, ob die Standortdienste aktiviert sind und du der Anwendung Zugriff erlaubt hast.</p>
+      </div>
+    `;
+    
+    container.appendChild(errorMsg);
+    
+    // Entferne die Nachricht nach 5 Sekunden
+    setTimeout(() => {
+      if (container.contains(errorMsg)) {
+        container.removeChild(errorMsg);
+      }
+    }, 5000);
+  }
+  
+  // Hilfsmethode: Aktualisiert den Zustand des Standort-Buttons
+  private updateLocationButtonState(active: boolean): void {
+    const locationButton = document.querySelector('.location-button a');
+    if (locationButton) {
+      if (active) {
+        locationButton.classList.add('active');
+      } else {
+        locationButton.classList.remove('active');
+      }
+    }
   }
 
   // Button zum Zentrieren auf Benutzerstandort
