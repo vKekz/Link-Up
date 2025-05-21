@@ -3,10 +3,20 @@ import { UserRegistrationFormComponent } from "./components/user-registration-fo
 import { AppComponent } from "./app.component";
 import { UserLoginFormComponent } from "./components/user-login-form/user-login-form.component";
 import { UserProfileComponent } from "./components/user-profile/user-profile.component";
+import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
+import { SidebarComponent } from "./components/sidebar/sidebar.component";
+import { DashboardComponent } from "./components/dashboard/dashboard.component";
+import { MenuButtonComponent } from "./components/menu-button/menu-button.component";
+import { LandingPageComponent } from "./components/landing-page/landing-page.component";
 
 export const routes: Routes = [
   { path: "", component: AppComponent, pathMatch: "full" },
+  { path: "menu", component: MenuButtonComponent, pathMatch: "full" },
+  { path: "dashboard", component: DashboardComponent, pathMatch: "full" },
+  { path: "sidebar", component: SidebarComponent, pathMatch: "full"},
+  { path: "map", component: MapOverviewComponent, pathMatch: "full" },
   { path: "register", component: UserRegistrationFormComponent, pathMatch: "full" },
   { path: "login", component: UserLoginFormComponent, pathMatch: "full" },
   { path: "profile", component: UserProfileComponent, pathMatch: "full" },
+  { path: "landing", component: LandingPageComponent, pathMatch: "full" },
 ];

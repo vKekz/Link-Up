@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+.map-container {
+  position: relative;
+  height: 100vh; /* Feste Höhe, ändere auf z.B. 100% für vollständig responsive Höhe */
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.map-frame {
+  height: 100%;
+  width: 100%;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+}
+
+.marker-popup h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.marker-popup p {
+  margin: 0 0 10px 0;
+}
+
+.btn-details {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.btn-details:hover {
+  background-color: #45a049;
+}
