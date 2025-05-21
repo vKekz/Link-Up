@@ -126,8 +126,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
           const container = popup.getElement();
           if (container) {
             const button = container.querySelector(".btn-details");
-            if (button) {              button.addEventListener("click", () => {
-                const title = button.getAttribute("data-marker-title") || "";
+            if (button) {
+              button.addEventListener("click", () => {
+                const title = button.getAttribute("data-marker-title");
                 this.markerClicked.emit(title);
                 console.log(`Marker clicked: ${title}`);
               });

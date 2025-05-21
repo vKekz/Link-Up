@@ -1,4 +1,11 @@
 <div class="dashboardBox">
     <app-sidebar></app-sidebar>
-    <app-map></app-map>
+    <app-map (markerClicked)="handleMarkerClick($event)"></app-map>
 </div>
+
+<!-- Hier könnte eine Detailansicht für den ausgewählten Marker angezeigt werden -->
+<!-- Zum Beispiel: -->
+<!-- <div class="marker-details" *ngIf="selectedMarker()">
+    <h3>{{ selectedMarker() }}</h3>
+    <p>Details zum ausgewählten Ort</p>
+</div> -->

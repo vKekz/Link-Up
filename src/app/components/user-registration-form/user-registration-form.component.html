@@ -1,14 +1,104 @@
-<div class="user-registration-container">
-  <label for="email">E-Mail:</label>
-  <input (keyup)="handleMailInput($event)" type="email" name="email" id="email" placeholder="Deine E-Mail" />
-  <label for="password">Passwort:</label>
-  <input
-    (keyup)="handlePasswordInput($event)"
-    type="password"
-    name="password"
-    id="password"
-    placeholder="Dein Passwort"
-  />
-  <button (click)="handleSubmit()">Registrieren</button>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2 class="auth-title">Konto erstellen</h2>
+      <p class="auth-subtitle">Registriere dich für Link-Up</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-alert">
+      {{ errorMessage }}
+      <button class="btn-close" (click)="errorMessage = null">×</button>
+    </div>
+    
+    <div *ngIf="successMessage" class="success-alert">
+      {{ successMessage }}
+    </div>
+    
+    <form (ngSubmit)="register()" class="auth-form" *ngIf="!successMessage">
+      <div class="form-group">
+        <label for="fullName" class="form-label">Vollständiger Name</label>
+        <input 
+          type="text" 
+          id="fullName" 
+          name="fullName"
+          [(ngModel)]="user.fullName"
+          class="form-control"
+          placeholder="Max Mustermann"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="username" class="form-label">Benutzername <span class="optional">(optional)</span></label>
+        <input 
+          type="text" 
+          id="username" 
+          name="username"
+          [(ngModel)]="user.username"
+          class="form-control"
+          placeholder="max123"
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="email" class="form-label">E-Mail-Adresse</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          [(ngModel)]="user.email"
+          class="form-control"
+          placeholder="name@example.com"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="password" class="form-label">Passwort</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password"
+          [(ngModel)]="user.password"
+          class="form-control"
+          placeholder="Mindestens 6 Zeichen"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword" class="form-label">Passwort bestätigen</label>
+        <input 
+          type="password" 
+          id="confirmPassword" 
+          name="confirmPassword"
+          [(ngModel)]="user.confirmPassword"
+          class="form-control"
+          placeholder="Passwort wiederholen"
+          required
+        >
+      </div>
+      
+      <div class="form-group terms">
+        <label class="checkbox-label">
+          <input type="checkbox" required> 
+          Ich akzeptiere die <a href="#">Nutzungsbedingungen</a> und <a href="#">Datenschutzrichtlinien</a>
+        </label>
+      </div>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block" 
+        [disabled]="loading"
+      >
+        {{ loading ? 'Bitte warten...' : 'Konto erstellen' }}
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>Bereits ein Konto? <a routerLink="/login">Jetzt anmelden</a></p>
+    </div>
+  </div>
 </div>
-{{ JSON.stringify(this.response()) }}
+  <button (click)="handleSubmit()">Registrieren</button>
+
+<!-- Removed invalid reference to this.response() -->

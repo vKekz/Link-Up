@@ -21,6 +21,36 @@ export type Database = {
         }
         Relationships: []
       }
+      groups: {
+        Row: {
+          id: number
+          name: string
+          description: string
+          creator_id: string
+          members: string[]
+          created_at: string
+          image_url?: string
+        }
+        Insert: {
+          id?: number
+          name: string
+          description: string
+          creator_id: string
+          members: string[]
+          created_at: string
+          image_url?: string
+        }
+        Update: {
+          id?: number
+          name?: string
+          description?: string
+          creator_id?: string
+          members?: string[]
+          created_at?: string
+          image_url?: string
+        }
+        Relationships: []
+      }
       posts: {
         Row: {
           created_at: string | null

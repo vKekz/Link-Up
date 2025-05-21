@@ -1,4 +1,73 @@
-<main class="main">
-  
-</main>
-<router-outlet />
+<div class="app-container">
+  <!-- Navigation Header -->
+  <header class="app-header">
+    <div class="container flex justify-between items-center">
+      <a routerLink="/" class="logo">
+        <span class="logo-icon">🔗</span>
+        <span class="logo-text">Link-Up</span>
+      </a>
+      
+      <nav class="main-nav" *ngIf="isLoggedIn">
+        <ul class="nav-list">
+          <li><a routerLink="/dashboard" routerLinkActive="active">Dashboard</a></li>
+          <li><a routerLink="/map" routerLinkActive="active">Karte</a></li>
+          <li><a routerLink="/groups" routerLinkActive="active">Gruppen</a></li>
+          <li><a routerLink="/profile" routerLinkActive="active">Profil</a></li>
+        </ul>
+      </nav>
+      
+      <div class="auth-actions">
+        <ng-container *ngIf="!isLoggedIn; else userActions">
+          <a routerLink="/login" class="btn btn-secondary">Anmelden</a>
+          <a routerLink="/register" class="btn btn-primary">Registrieren</a>
+        </ng-container>
+        
+        <ng-template #userActions>
+          <button class="user-menu-button" [class.active]="showUserMenu" (click)="toggleUserMenu()">
+            <div class="user-avatar">
+              <span class="material-icon">person</span>
+            </div>
+          </button>
+          
+          <div class="user-menu" *ngIf="showUserMenu">
+            <div class="user-info">
+              <strong>{{ username }}</strong>
+              <span>{{ userEmail }}</span>
+            </div>
+            <div class="menu-divider"></div>
+            <ul>
+              <li><a routerLink="/profile">Mein Profil</a></li>
+              <li><a routerLink="/settings">Einstellungen</a></li>
+              <li><button (click)="logout()" class="btn-logout">Abmelden</button></li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hauptinhalt -->
+  <main class="app-content">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">
+          <span class="logo-icon">🔗</span>
+          <span class="logo-text">Link-Up</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">Datenschutz</a>
+          <a href="#">Impressum</a>
+          <a href="#">Kontakt</a>
+        </div>
+        <div class="footer-copyright">
+          &copy; 2025 Link-Up. Alle Rechte vorbehalten.
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>

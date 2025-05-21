@@ -1,1 +1,184 @@
-<p>groups works!</p>
+<div class="container">
+  <!-- Header mit Suchfeld und Aktionsbuttons -->
+  <header class="page-header">
+    <div class="header-content">
+      <h1>Meine Gruppen</h1>
+      <div class="header-actions">
+        <div class="search-box">
+          <span class="material-icon search-icon">search</span>
+          <input 
+            type="text" 
+            placeholder="Gruppen durchsuchen..." 
+            [(ngModel)]="searchQuery"
+            (input)="filterGroups()"
+            class="search-input">
+        </div>
+        <button 
+          (click)="showNewGroupForm = !showNewGroupForm" 
+          class="btn btn-primary"
+          [class.active]="showNewGroupForm">
+          <span class="material-icon">{{ showNewGroupForm ? 'close' : 'add' }}</span>
+          {{ showNewGroupForm ? 'Abbrechen' : 'Gruppe erstellen' }}
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Benachrichtigungen -->
+  <div *ngIf="error" class="alert alert-error">
+    <div class="alert-content">
+      <span class="material-icon">error</span>
+      <p>{{ error }}</p>
+    </div>
+    <button (click)="error = null" class="btn-icon">
+      <span class="material-icon">close</span>
+    </button>
+  </div>
+
+  <!-- Formular für neue Gruppe -->
+  <div *ngIf="showNewGroupForm" class="card new-group-form">
+    <div class="card-header">
+      <h2>Neue Gruppe erstellen</h2>
+    </div>
+    <div class="card-body">
+      <form (submit)="createGroup()">
+        <div class="form-group">
+          <label for="groupName" class="form-label">Gruppenname</label>
+          <input 
+            type="text" 
+            id="groupName" 
+            [(ngModel)]="newGroup.name" 
+            name="groupName" 
+            required 
+            class="form-control"
+            placeholder="z.B. Sportfreunde Mannheim">        </div>
+        <div class="form-group">
+          <label for="groupDescription" class="form-label">Beschreibung</label>
+          <textarea 
+            id="groupDescription" 
+            [(ngModel)]="newGroup.description" 
+            name="groupDescription" 
+            class="form-control"
+            placeholder="Beschreibe, worum es in deiner Gruppe geht"
+            rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="groupImage" class="form-label">Gruppenbild (URL)</label>
+          <input 
+            type="text" 
+            id="groupImage" 
+            [(ngModel)]="newGroup.image" 
+            name="groupImage"
+            class="form-control"
+            placeholder="https://example.com/bild.jpg (optional)">
+        </div>
+        <div class="card-footer">
+          <button 
+            type="button" 
+            (click)="resetNewGroupForm(); showNewGroupForm = false" 
+            class="btn btn-secondary">
+            Abbrechen
+          </button>
+          <button 
+            type="submit" 
+            class="btn btn-primary" 
+            [disabled]="formSubmitting || !newGroup.name.trim()">
+            {{ formSubmitting ? 'Wird erstellt...' : 'Gruppe erstellen' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- Ladeanimation -->
+  <div *ngIf="loading" class="loading-container">
+    <div class="loader">
+      <div class="spinner"></div>
+    </div>
+    <p class="loading-text">Gruppen werden geladen...</p>
+  </div>
+
+  <!-- Keine Gruppen -->
+  <div *ngIf="!loading && groups.length === 0 && !error" class="empty-state">
+    <div class="empty-state-icon">
+      <span class="material-icon">group</span>
+    </div>
+    <h3>Du bist noch keiner Gruppe beigetreten</h3>
+    <p>Erstelle eine neue Gruppe oder suche nach bestehenden Gruppen, um beizutreten.</p>
+    <button (click)="showNewGroupForm = true" class="btn btn-primary">
+      <span class="material-icon">add</span>
+      Erste Gruppe erstellen
+    </button>
+  </div>
+
+  <!-- Gruppenliste -->
+  <div *ngIf="!loading && filteredGroups.length > 0" class="groups-grid">
+    <div *ngFor="let group of filteredGroups" class="group-card">
+      <div class="group-card-header" 
+           [style.backgroundImage]="group.image_url ? 'url(' + group.image_url + ')' : 'url(assets/default-group.jpg)'">
+        <div class="group-meta">
+          <span class="group-member-count">
+            <span class="material-icon">people</span>
+            {{ group.member_count || 1 }} Mitglieder
+          </span>
+        </div>
+      </div>      <div class="group-card-content">
+        <h3 class="group-title">{{ group.name }}</h3>
+        <p class="group-description">{{ group.description || 'Keine Beschreibung verfügbar' }}</p>
+        
+        <div class="group-info">
+          <div class="group-info-item">
+            <span class="material-icon">calendar_today</span>
+            <span>{{ formatDate(group.created_at) }}</span>
+          </div>
+          
+          <div *ngIf="group.location" class="group-info-item">
+            <span class="material-icon">place</span>
+            <span>{{ group.location }}</span>
+          </div>
+          
+          <div *ngIf="group.last_activity" class="group-info-item">
+            <span class="material-icon">update</span>
+            <span>Letzte Aktivität: {{ formatDate(group.last_activity) }}</span>
+          </div>
+        </div>
+        
+        <div class="group-tags" *ngIf="group.tags && group.tags.length > 0">
+          <span *ngFor="let tag of group.tags" class="tag">{{ tag }}</span>
+        </div>
+        
+        <div class="group-creator" *ngIf="isGroupCreator(group)">
+          <span class="badge badge-primary">Ersteller</span>
+        </div>
+        
+        <div class="group-actions">
+          <button (click)="viewGroupDetails(group.id)" class="btn btn-primary btn-sm">
+            <span class="material-icon">visibility</span>
+            Details
+          </button>
+          
+          <button *ngIf="!isGroupCreator(group)" (click)="leaveGroup(group.id)" class="btn btn-danger btn-sm">
+            <span class="material-icon">exit_to_app</span>
+            Verlassen
+          </button>
+          
+          <button *ngIf="isGroupCreator(group)" class="btn btn-secondary btn-sm">
+            <span class="material-icon">edit</span>
+            Bearbeiten
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Keine Suchergebnisse -->
+  <div *ngIf="!loading && groups.length > 0 && filteredGroups.length === 0" class="empty-search">
+    <div class="empty-state-icon">
+      <span class="material-icon">search_off</span>
+    </div>
+    <h3>Keine Ergebnisse gefunden</h3>
+    <p>Es wurden keine Gruppen für "{{ searchQuery }}" gefunden.</p>
+    <button (click)="searchQuery = ''; filterGroups()" class="btn btn-secondary">
+      Suche zurücksetzen
+    </button>
+  </div>
+</div>

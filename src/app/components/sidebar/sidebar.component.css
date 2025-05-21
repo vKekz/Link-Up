@@ -1,69 +1,144 @@
 .sidebarBox {
     position: relative;
     height: 100vh;
-    width: 20vw;
-    background-color: var(--color-palette-light-green);
+    width: 280px;
+    background-color: var(--color-surface);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-md);
+    z-index: 10;
 }
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding: var(--spacing-md) var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.sidebar-logo {
+    height: 32px;
+    width: 32px;
+    margin-right: var(--spacing-sm);
+}
+
+.sidebar-title {
+    font-family: var(--font-secondary);
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    margin: 0;
+}
+
 .sidebarLinkBox {
     display: flex;
     flex-direction: column;
-    justify-content:space-evenly;
-    position: absolute;
-    top: 3vh;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 75vh;
-    width: 18vw;
-    background-color: var(--color-palette-cream);
-    border-radius: 5px;
+    flex-grow: 1;
+    padding: var(--spacing-md);
 }
-.sidebarLinks:hover > .sidebarLink{
-    font-size: 32px;
-   
+
+.sidebarLinks {
+    margin-bottom: var(--spacing-lg);
 }
+
 .sidebarLink {
     text-decoration: none;
-    color: black;
+    color: var(--color-text-secondary);
     font-family: var(--font-primary);
-    font-size: 30px;
+    font-size: 1rem;
+    font-weight: 500;
     display: flex;
     align-items: center;
-    gap: 0.5vw;
-    transition: font-size 100ms;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius-md);
+    transition: all var(--transition-normal);
 }
+
+.sidebarLink .material-symbols-rounded {
+    font-size: 24px;
+    margin-right: var(--spacing-md);
+}
+
+.sidebarLink .link-text {
+    font-size: 1rem;
+}
+
+.sidebarLink:hover,
+.sidebarLink:focus {
+    background-color: var(--color-input-background);
+    color: var(--color-primary);
+    transform: translateY(-2px);
+}
+
+.sidebarLink.active {
+    background-color: var(--color-primary-light);
+    color: var(--color-white);
+}
+
 .sidebarProfileBox {
-    position: absolute;
     display: flex;
-    bottom: 3vh;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 10vh;
-    width: 18vw;
-    background-color: var(--color-palette-cream);
-    border-radius: 5px;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-top: 1px solid var(--color-border);
+    margin-top: auto;
 }
+
 .profileButton {
-    width: 10vw;
-    margin: 2vh;
     display: flex;
-    flex-direction: row;
-    background-color: gray;
+    align-items: center;
+    background: none;
     border: none;
-    cursor: pointer;
-}
-.profileButton p {
     font-family: var(--font-primary);
-}
-.settingsButton {
-    width: 4vw;
-    margin: 2vh;
-    background-color: gray;
-    border: none;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    text-decoration: none;
     cursor: pointer;
+    transition: color var(--transition-normal);
 }
-.settingsButton:hover > .settingsWheel{
-    transform: rotateZ(360deg);
+
+.profileButton:hover {
+    color: var(--color-primary);
 }
+
+.profile-avatar {
+    width: 36px;
+    height: 36px;
+    background-color: var(--color-primary-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: var(--spacing-sm);
+    color: white;
+}
+
+.settingsButton {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    border-radius: 50%;
+    color: var(--color-text-tertiary);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.settingsButton:hover {
+    background-color: var(--color-input-background);
+    color: var(--color-primary);
+}
+
+.settingsButton:hover > .settingsWheel {
+    transform: rotateZ(180deg);
+}
+
 .settingsWheel {
-    transition: transform 1s;
+    transition: transform var(--transition-slow);
+    font-size: 24px;
 }

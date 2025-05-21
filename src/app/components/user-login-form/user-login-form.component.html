@@ -1,1 +1,65 @@
-﻿<p>user-login-form works!</p>
+﻿<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <h2 class="auth-title">Willkommen zurück</h2>
+      <p class="auth-subtitle">Melde dich bei deinem Link-Up Konto an</p>
+    </div>
+    
+    <div *ngIf="errorMessage" class="error-alert">
+      {{ errorMessage }}
+      <button class="btn-close" (click)="errorMessage = null">×</button>
+    </div>
+    
+    <form (ngSubmit)="login()" class="auth-form">
+      <div class="form-group">
+        <label for="email" class="form-label">E-Mail</label>
+        <input 
+          type="email" 
+          id="email" 
+          name="email"
+          [(ngModel)]="credentials.email"
+          class="form-control"
+          placeholder="name@example.com"
+          required
+        >
+      </div>
+      
+      <div class="form-group">
+        <label for="password" class="form-label">Passwort</label>
+        <input 
+          type="password" 
+          id="password" 
+          name="password"
+          [(ngModel)]="credentials.password"
+          class="form-control"
+          placeholder="••••••••"
+          required
+        >
+        <div class="text-right">
+          <a href="#" class="forgot-password">Passwort vergessen?</a>
+        </div>
+      </div>
+      
+      <button 
+        type="submit" 
+        class="btn btn-primary btn-block" 
+        [disabled]="loading"
+      >
+        {{ loading ? 'Bitte warten...' : 'Anmelden' }}
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-secondary btn-block" 
+        (click)="loginWithDemo()" 
+        [disabled]="loading"
+      >
+        Mit Demo-Konto anmelden
+      </button>
+    </form>
+    
+    <div class="auth-footer">
+      <p>Noch kein Konto? <a routerLink="/register">Jetzt registrieren</a></p>
+    </div>
+  </div>
+</div>
