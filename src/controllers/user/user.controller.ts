@@ -42,6 +42,7 @@ export class UserController extends ApiController {
     return {
       id: response.data.user?.id,
       error: response.error?.code,
+      message: response.error?.message,
     } as UserLoginResponse;
   }
 }

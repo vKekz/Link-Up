@@ -2,7 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
 
 :root {
-  --border-radius: 10px;
+  --border-radius: 15px;
 
   --color-palette-dark-teal: #05668d;
   --color-palette-teal: #028090;
@@ -14,6 +14,7 @@
   --color-palette-gray: #efefefff;
   --color-palette-light-gray: #eaedf0ff;
   --color-palette-light-yellow: #e4ecba;
+  --color-palette-warning: #ff8383;
 
   --font-primary: "Ubuntu", sans-serif;
   /* proportional (normal) */

@@ -1,16 +1,34 @@
-<div class="user-registration-container">
-  <label for="email">E-Mail:</label>
-  <input (keyup)="handleMailInput($event)" type="email" name="email" id="email" placeholder="Deine E-Mail" />
-  <label for="password">Passwort:</label>
-  <input
-    (keyup)="handlePasswordInput($event)"
-    type="password"
-    name="password"
-    id="password"
-    placeholder="Dein Passwort"
-  />
-  <button (click)="handleSubmit()">Registrieren</button>
+<div class="container">
+  <div class="title">Registrieren</div>
+  <div class="sub-container">
+    <div class="input">
+      <label for="email">E-Mail</label>
+      <input
+        (keyup)="handleMailInput($event)"
+        [class]="!this.email && this.hasTriedSubmit ? 'required' : ''"
+        name="email"
+        id="email"
+        type="email"
+        placeholder="Deine E-Mail"
+      />
+    </div>
+    <div class="input">
+      <label for="password">Passwort</label>
+      <input
+        (keyup)="handlePasswordInput($event)"
+        [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
+        name="password"
+        id="password"
+        type="password"
+        placeholder="Dein Passwort"
+      />
+    </div>
+    <div class="response-container">
+      {{ this.response()?.message }}
+    </div>
+    <div class="info">Du bist bereits registiert? Hier <a href="/login">Anmelden</a>.</div>
+    <div class="submit">
+      <button type="submit" (click)="handleSubmit()">Registrieren</button>
+    </div>
+  </div>
 </div>
-{{ JSON.stringify(this.response()) }}
-
-<div class="container"></div>

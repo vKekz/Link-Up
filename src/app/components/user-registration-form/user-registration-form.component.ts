@@ -11,8 +11,9 @@ export class UserRegistrationFormComponent {
   // Use signal to instantly update view
   protected readonly response: WritableSignal<UserRegistrationResponse | undefined>;
 
-  private email?: string;
-  private password?: string;
+  protected email?: string;
+  protected password?: string;
+  protected hasTriedSubmit: boolean = false;
 
   constructor(protected readonly supabaseService: SupabaseService) {
     this.response = signal(undefined);
@@ -38,8 +39,7 @@ export class UserRegistrationFormComponent {
   }
 
   handleSubmit() {
+    this.hasTriedSubmit = true;
     return this.registerUser();
   }
-
-  protected readonly JSON = JSON;
 }
