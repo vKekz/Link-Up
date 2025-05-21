@@ -14,6 +14,7 @@ export class UserRegistrationFormComponent {
   protected readonly response: WritableSignal<UserRegistrationResponse | undefined>;
 
   protected email?: string;
+  protected name?: string;
   protected password?: string;
   protected hasTriedSubmit: boolean = false;
 
@@ -29,17 +30,22 @@ export class UserRegistrationFormComponent {
     this.email = target.value;
   }
 
+  handleNameInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.name = target.value;
+  }
+
   handlePasswordInput(event: Event) {
     const target = event.target as HTMLInputElement;
     this.password = target.value;
   }
 
   async registerUser() {
-    if (!this.email || !this.password) {
+    if (!this.name || !this.email || !this.password) {
       return;
     }
 
-    const response = await this.supabaseService.getUserController().signUpUser(this.email, this.password);
+    const response = await this.supabaseService.getUserController().signUpUser(this.name, this.email, this.password);
     if (!response.error) {
       await this.router.navigate(["/", ROUTE_DASHBOARD]);
       return;

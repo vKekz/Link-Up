@@ -2,6 +2,17 @@
   <div class="title">Registrieren</div>
   <div class="sub-container">
     <div class="input">
+      <label for="name">Name</label>
+      <input
+        (keyup)="handleNameInput($event)"
+        [class]="!this.name && this.hasTriedSubmit ? 'required' : ''"
+        name="name"
+        id="name"
+        type="text"
+        placeholder="Dein Name"
+      />
+    </div>
+    <div class="input">
       <label for="email">E-Mail</label>
       <input
         (keyup)="handleMailInput($event)"
@@ -26,7 +37,7 @@
     <div class="response-container">
       {{ this.response()?.message }}
     </div>
-    <div class="info">Du bist bereits registiert? Hier <a href="/login">Anmelden</a>.</div>
+    <div class="info">Du bist bereits registiert? Hier <a href="/login">anmelden</a>.</div>
     <div class="submit">
       <button type="submit" (click)="handleSubmit()">Registrieren</button>
     </div>

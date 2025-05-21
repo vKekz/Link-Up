@@ -7,7 +7,5 @@ import { SupabaseService } from "../../../services/supabase.service";
   styleUrl: "./user-profile.component.css",
 })
 export class UserProfileComponent {
-  constructor(protected readonly supabaseService: SupabaseService) {
-    console.log(this.supabaseService.supabaseClient.auth.getSession());
-  }
+  constructor(protected readonly supabaseService: SupabaseService) {}
 }
