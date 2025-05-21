@@ -1,0 +1,11 @@
+<div>
+    @for (post of this.getPosts(); track post.id) {
+        <app-post [post]="post"></app-post>
+    }
+    <button (click)="this.toggleForm()">erstelle</button>
+
+    @if (this.shouldShowCreationForm) {
+        <div class="form">Form</div>
+    }
+</div>
+<!-- TODO: Form etc -->

@@ -6,7 +6,7 @@ import { MapOverviewComponent } from "./components/map-overview/map-overview.com
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { MenuButtonComponent } from "./components/menu-button/menu-button.component";
-
+import { PostsFormComponent } from "./components/posts-form/posts-form.component";
 
 export const routes: Routes = [
   { path: "", component: AppComponent, pathMatch: "full" },
@@ -16,4 +16,5 @@ export const routes: Routes = [
   { path: "map", component: MapOverviewComponent, pathMatch: "full" },
   { path: "register", component: UserRegistrationFormComponent, pathMatch: "full" },
   { path: "login", component: UserLoginFormComponent, pathMatch: "full" },
+  { path: "posts", component: PostsFormComponent, pathMatch: "full" }
 ];
