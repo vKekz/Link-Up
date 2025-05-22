@@ -1,3 +1,33 @@
 .container {
-    background-color: aqua;
+    background-color: var(--color-palette-white);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-primary);
+    color: var(--color-palette-dark-gray);
+    display: flex;
+    flex-direction: column;
+    gap: px;
+    transition: transform 0.2s ease;
+}
+
+.container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.container button {
+    align-self: flex-end;
+    margin-top: 10px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.container button:hover {
+    background-color: #cc0000;
 }

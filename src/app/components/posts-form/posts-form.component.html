@@ -1,11 +1,71 @@
-<div>
+<!-- <div>
     @for (post of this.getPosts(); track post.id) {
         <app-post [post]="post"></app-post>
     }
-    <button (click)="this.toggleForm()">erstelle</button>
+    <button (click)="this.toggleForm()">toggle</button>
 
     @if (this.shouldShowCreationForm) {
-        <div class="form">Form</div>
+        <div class="container">
+        <h2>Create New Post</h2>
+        <form  class="form">
+            <label for="postTitle">Title:</label>
+            <input [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" placeholder="Enter post title" required>
+
+            <label for="postTags">Tags (comma-separated):</label>
+            <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags" placeholder="e.g., event, fun, community">
+
+            <label for="postLocation">Location:</label>
+            <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location" placeholder="e.g., Central Park, Online">
+
+            <label for="postDescription">Description:</label>
+            <textarea [(ngModel)]="newPost.description" id="postDescription" name="description" placeholder="Tell us more about your post..." rows="5"></textarea>
+
+            <div class="checkbox-group">
+                <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join">
+                <label for="postOpenToJoin">Open to Join</label>
+            </div>
+
+            <button (click)="this.createPost()">Create Post</button>
+        </form>
+        <div id="formMessage" class="form-message"></div>
+    </div>
+    }
+</div> -->
+<div class="page-wrapper">
+
+<div class="post-grid">
+    @for (post of this.getPosts(); track post.id) {
+        <app-post [post]="post"></app-post>
     }
 </div>
-<!-- TODO: Form etc -->
+
+    <button class="toggle-btn" (click)="this.toggleForm()">Create an Event</button>
+
+    @if (this.shouldShowCreationForm) {
+        <div class="modal-overlay" (click)="this.toggleForm()"></div>
+        <div class="modal">
+            <h2>Create New Post</h2>
+            <form class="form" (click)="$event.stopPropagation()">
+
+                <label for="postTitle">Title:</label>
+                <input [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" required>
+
+                <label for="postTags">Tags:</label>
+                <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags">
+
+                <label for="postLocation">Location:</label>
+                <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location">
+
+                <label for="postDescription">Description:</label>
+                <textarea [(ngModel)]="newPost.description" id="postDescription" name="description" rows="5"></textarea>
+
+                <div class="checkbox-group">
+                <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join">
+                    <label for="postOpenToJoin">Open to Join</label>
+                </div>
+
+                <button class="createButton" (click)="this.createPost()">Create Post</button>
+            </form>
+        </div>
+    }
+</div>

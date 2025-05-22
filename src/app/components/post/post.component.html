@@ -1,4 +1,8 @@
 <div class="container">
     {{ this.post?.title }}
-    <button>Delete</button>
+    {{ this.post?.tags }}
+    {{ this.post?.open_to_join }}
+    {{ this.post?.location }}
+    {{ this.post?.description }}
+    <button (click)="this.deletePost()">Delete</button>
 </div>

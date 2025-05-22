@@ -4,9 +4,7 @@ import { ApiController } from "../api-controller";
 import { signal, WritableSignal } from "@angular/core";
 import { PostRequest } from "../../contracts/post/post.request";
 
-/**
- * Represents the controller that is used for user posts.
- */ 
+
 export class PostController extends ApiController {
   private readonly POSTS_TABLE_NAME: string = "posts";
   public readonly posts: WritableSignal<PostResponse[]> = signal([]);
@@ -20,13 +18,18 @@ export class PostController extends ApiController {
   public async createPost(postRequest: PostRequest) {
     await this.supabaseClient.from(this.POSTS_TABLE_NAME).insert(postRequest);
 
-    // Updating in frontend
     this.posts.update((data) => {
       return [...data, postRequest as PostResponse]
     });
   }
 
-  public async deletePost(id: string) {}
+  public async deletePost(id: string) {
+    await this.supabaseClient.from(this.POSTS_TABLE_NAME).delete().eq('id', id);
+
+    this.posts.update((currentPosts) => {
+      return currentPosts.filter(post => post.id !== id);
+    });
+  }
 
   private async loadPosts() {
     // TODO: Filter

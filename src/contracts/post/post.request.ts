@@ -1,6 +1,8 @@
 export interface PostRequest {
-    title: string;
-    tags: string[];
-    location: string;
-    open_to_join: boolean;
+    title?: string;
+    tags?: string[];
+    location?: string;
+    description?: string;
+    open_to_join?: boolean;
+    creator_id?: string;
 }
