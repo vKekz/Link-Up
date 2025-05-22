@@ -1,5 +1,5 @@
 ﻿<div class="container">
-  <div class="title">Anmelden</div>
+  <div class="title">LinkUp - Anmelden</div>
   <div class="sub-container">
     <div class="input">
       <label for="email">E-Mail</label>
@@ -14,14 +14,21 @@
     </div>
     <div class="input">
       <label for="password">Passwort</label>
-      <input
-        (keyup)="handlePasswordInput($event)"
-        [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
-        name="password"
-        id="password"
-        type="password"
-        placeholder="Dein Passwort"
-      />
+      <div class="password-container">
+        <input
+          (keyup)="handlePasswordInput($event)"
+          [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
+          name="password"
+          id="password"
+          type="password"
+          placeholder="Dein Passwort"
+          #passwordInput
+        />
+        <i
+          (click)="this.togglePasswordVisibility()"
+          [ngClass]="this.showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"
+        ></i>
+      </div>
     </div>
     <div class="response-container">
       {{ this.response()?.message }}

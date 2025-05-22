@@ -1,14 +1,16 @@
-﻿import { Component, signal, WritableSignal } from "@angular/core";
+﻿import { Component, ElementRef, signal, ViewChild, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserLoginResponse } from "../../../contracts/user/user-login.response";
 import { Router } from "@angular/router";
 import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: "app-user-login-form",
-  imports: [],
+  imports: [NgClass],
   templateUrl: "./user-login-form.component.html",
   styleUrl: "./user-login-form.component.css",
+  standalone: true,
 })
 export class UserLoginFormComponent {
   // Use signal to instantly update view
@@ -17,6 +19,10 @@ export class UserLoginFormComponent {
   protected email?: string;
   protected password?: string;
   protected hasTriedSubmit: boolean = false;
+  protected showPassword: boolean = false;
+
+  @ViewChild("passwordInput")
+  public passwordInput?: ElementRef;
 
   constructor(
     protected readonly supabaseService: SupabaseService,
@@ -52,5 +58,10 @@ export class UserLoginFormComponent {
   handleSubmit() {
     this.hasTriedSubmit = true;
     return this.loginUser();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+    (this.passwordInput?.nativeElement as HTMLInputElement).type = this.showPassword ? "text" : "password";
   }
 }

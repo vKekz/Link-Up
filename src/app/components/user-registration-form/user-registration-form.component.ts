@@ -1,11 +1,13 @@
-import { Component, signal, WritableSignal } from "@angular/core";
+import { Component, ElementRef, signal, ViewChild, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserRegistrationResponse } from "../../../contracts/user/user-registration.response";
 import { Router } from "@angular/router";
 import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: "app-user-registration-form",
+  imports: [NgClass],
   templateUrl: "./user-registration-form.component.html",
   styleUrl: "./user-registration-form.component.css",
 })
@@ -17,6 +19,10 @@ export class UserRegistrationFormComponent {
   protected name?: string;
   protected password?: string;
   protected hasTriedSubmit: boolean = false;
+  protected showPassword: boolean = false;
+
+  @ViewChild("passwordInput")
+  public passwordInput?: ElementRef;
 
   constructor(
     protected readonly supabaseService: SupabaseService,
@@ -57,5 +63,10 @@ export class UserRegistrationFormComponent {
   handleSubmit() {
     this.hasTriedSubmit = true;
     return this.registerUser();
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+    (this.passwordInput?.nativeElement as HTMLInputElement).type = this.showPassword ? "text" : "password";
   }
 }

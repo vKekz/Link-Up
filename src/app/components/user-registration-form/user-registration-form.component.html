@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="title">Registrieren</div>
+  <div class="title">LinkUp - Registrieren</div>
   <div class="sub-container">
     <div class="input">
       <label for="name">Name</label>
@@ -25,21 +25,28 @@
     </div>
     <div class="input">
       <label for="password">Passwort</label>
-      <input
-        (keyup)="handlePasswordInput($event)"
-        [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
-        name="password"
-        id="password"
-        type="password"
-        placeholder="Dein Passwort"
-      />
+      <div class="password-container">
+        <input
+          (keyup)="handlePasswordInput($event)"
+          [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
+          name="password"
+          id="password"
+          type="password"
+          placeholder="Dein Passwort"
+          #passwordInput
+        />
+        <i
+          (click)="this.togglePasswordVisibility()"
+          [ngClass]="this.showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"
+        ></i>
+      </div>
     </div>
     <div class="response-container">
       {{ this.response()?.message }}
     </div>
     <div class="info">Du bist bereits registiert? Hier <a href="/login">anmelden</a>.</div>
     <div class="submit">
-      <button type="submit" (click)="handleSubmit()">Registrieren</button>
+      <button type="submit" (click)="handleSubmit()">Konto erstellen</button>
     </div>
   </div>
 </div>
