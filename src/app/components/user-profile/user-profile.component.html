@@ -1,2 +1,22 @@
-{{ this.supabaseService.getUserController().profileDetails()?.full_name }}
-<button (click)="this.supabaseService.getUserController().signOut()">Ausloggen</button>
+<div class="container">
+  <div class="title-bar">
+    <div class="title">
+      Hallo {{ this.getProfileDetails()?.full_name }}!
+      <img [src]="this.getProfileDetails()?.avatar" />
+    </div>
+    <div class="sign-out">
+      <button (click)="this.supabaseService.getUserController().signOut()">Abmelden</button>
+    </div>
+  </div>
+  <div class="settings">
+    <div class="name-setting">
+      <label for="name">Dein neuer Name:</label>
+      <input name="name" id="name" type="text" placeholder="{{ this.getProfileDetails()?.full_name }}" #nameInput />
+    </div>
+    <div class="image-setting">
+      <label for="image">Profilbild hochladen:</label>
+      <input name="image" id="image" type="file" accept="image/jpeg, image/png" #imageInput />
+    </div>
+    <button (click)="this.handleSubmit()">Änderungen speichern</button>
+  </div>
+</div>

@@ -27,6 +27,7 @@
 
 body {
   background-color: var(--color-palette-dark-gray);
+  font-family: "Ubuntu", sans-serif;
 }
 
 /* ── PolySansTrial (proportional) ── */

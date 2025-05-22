@@ -1,0 +1,62 @@
+.container {
+  font-size: 1.25rem;
+  color: var(--color-palette-white);
+  margin: 25px;
+}
+
+.title-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.settings {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  gap: 50px;
+}
+
+.name-setting {
+  font-size: 1.25rem;
+  gap: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+input[type="text"] {
+  font-size: 1rem;
+  height: 25px;
+  background-color: var(--color-palette-white);
+  border: 2px solid var(--color-palette-dark-gray);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.sign-out {
+  text-align: center;
+}
+
+button {
+  font-size: 1rem;
+  background-color: var(--color-palette-light-green);
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+
+button:hover {
+  filter: grayscale(50%);
+  cursor: pointer;
+}
+
+.sign-out button {
+  background-color: var(--color-palette-warning);
+}
+
+.title {
+  font-size: 3rem;
+}
