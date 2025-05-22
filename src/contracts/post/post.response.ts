@@ -7,5 +7,5 @@ export interface PostResponse {
     open_to_join: boolean;
     creator_id: string;
     location: string;
-    geo_location: string;
+    geo_data: `POINT(${number} ${number})` | null;
 }

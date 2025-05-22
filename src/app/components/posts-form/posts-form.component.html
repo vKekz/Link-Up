@@ -52,12 +52,11 @@
 
                 <label for="postTags">Tags:</label>
                 <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags">                <label for="postLocation">Location:</label>
-                <div class="location-search-container">
-                    <input [(ngModel)]="newPost.location" 
+                <div class="location-search-container">                    <input [(ngModel)]="newPost.location" 
                            type="text" 
                            id="postLocation" 
                            name="location" 
-                           placeholder="Mindestens 3 Zeichen eingeben..." 
+                           placeholder="Adresse eingeben (mindestens 3 Zeichen)..." 
                            (input)="searchAddress(newPost.location ?? '')"
                            [class.with-suggestions]="addressSuggestions.length > 0"
                            autocomplete="off">
@@ -74,9 +73,9 @@
                              (keydown.enter)="selectAddress(suggestion)">
                             {{ suggestion.display_name }}
                         </div>
-                    </div>                      <!-- Hilfstext -->
+                    </div>                    <!-- Hilfstext -->
                     <small class="hint-text" *ngIf="!isSearching && !addressSuggestions.length && newPost.location && newPost.location.length > 0 && !selectedAddress">
-                        Geben Sie mindestens 3 Buchstaben ein, um Adressvorschläge zu erhalten
+                        Mindestens 3 Zeichen eingeben, um die Suche zu starten.
                     </small>
                     <!-- Anzeige bei ausgewählter Adresse -->
                     <small class="success-text" *ngIf="selectedAddress">

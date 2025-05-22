@@ -40,13 +40,11 @@ export class PostsFormComponent implements OnInit, OnDestroy {
   constructor(
     private readonly subabaseService: SupabaseService,
     private readonly http: HttpClient
-  ) {}
-  
-  ngOnInit(): void {
+  ) {}    ngOnInit(): void {
     // Adresssuche mit Debouncing einrichten
     this.searchTerms.pipe(
       takeUntil(this.destroy$),
-      debounceTime(400), // 400ms warten nach Eingabe
+      debounceTime(500), // 500ms (0,5 Sekunden) warten nach Eingabe
       distinctUntilChanged() // Nur wenn sich der Text geändert hat
     ).subscribe(term => {
       this.performAddressSearch(term);
@@ -70,12 +68,19 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       this.newPost.creator_id = userId;
 
       this.newPost.tags = this.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-      this.newPost.latitude = this.selectedAddress ? parseFloat(this.selectedAddress.lat) : undefined;
-      this.newPost.longitude = this.selectedAddress ? parseFloat(this.selectedAddress.lon) : undefined;
-      
-      // Ausgabe der Geokoordinaten vor dem Speichern
-      if (this.newPost.latitude && this.newPost.longitude) {
-        console.log(`Post wird erstellt mit Geokoordinaten: Lat ${this.newPost.latitude}, Lng ${this.newPost.longitude}`);
+      // this.newPost.latitude = this.selectedAddress ? parseFloat(this.selectedAddress.lat) : undefined;
+      // this.newPost.longitude = this.selectedAddress ? parseFloat(this.selectedAddress.lon) : undefined;
+      const numberLongitude = this.selectedAddress ? parseFloat(this.selectedAddress.lon) : undefined;
+      const numberLatitude = this.selectedAddress ? parseFloat(this.selectedAddress.lat) : undefined;
+      if (numberLongitude !== undefined && numberLatitude !== undefined) {
+        this.newPost.geo_data = `POINT(${numberLongitude} ${numberLatitude})`;
+        console.log(`Geokoordinaten: ${this.newPost.geo_data}`);
+      } else {
+        this.newPost.geo_data = undefined;
+      }
+        // Ausgabe der Geokoordinaten vor dem Speichern
+      if (this.newPost) {
+        console.log(`Post wird erstellt mit Geokoordinaten: ${this.newPost.geo_data}`);
       } else {
         console.log('Post wird ohne Geokoordinaten erstellt');
       }
@@ -92,8 +97,7 @@ private resetForm() {
       location: '',
       description: '',
       open_to_join: false,
-      latitude: undefined,
-      longitude: undefined
+      geo_data: null,
     };
     this.tagsInput = '';
     this.selectedAddress = null;
@@ -110,14 +114,14 @@ private resetForm() {
   public searchAddress(searchText: string): void {
     this.searchTerms.next(searchText);
   }
-  
-  /**
+    /**
    * Führt die tatsächliche Adresssuche durch
    * @param searchText Der Suchtext für die Adresse
-   */
-  private performAddressSearch(searchText: string): void {
+   */  private performAddressSearch(searchText: string): void {
     // Wenn der Suchtext leer ist oder weniger als 3 Zeichen hat, zeige keine Vorschläge
-    if (!searchText || searchText.length < 3) {
+    // Leerzeichen werden ignoriert bei der Zählung
+    const textWithoutSpaces = searchText ? searchText.replace(/\s/g, '') : '';
+    if (!textWithoutSpaces || textWithoutSpaces.length < 3) {
       this.addressSuggestions = [];
       return;
     }
@@ -147,13 +151,32 @@ private resetForm() {
   public selectAddress(suggestion: AddressSuggestion): void {
     this.selectedAddress = suggestion;
     this.newPost.location = suggestion.display_name;
+    this.newPost.geo_data = `POINT(${parseFloat(suggestion.lon)} ${parseFloat(suggestion.lat)})`; // Geokoordinaten setzen
     
     // Koordinaten speichern
-    this.newPost.latitude = parseFloat(suggestion.lat);
-    this.newPost.longitude = parseFloat(suggestion.lon);
+    
+    /*
+
+    Example: const { error } = await supabase.from('restaurants').insert([
+  {
+    name: 'Supa Burger',
+    location: 'POINT(-73.946823 40.807416)',
+  },
+  {
+    name: 'Supa Pizza',
+    location: 'POINT(-73.94581 40.807475)',
+  },
+  {
+    name: 'Supa Taco',
+    location: 'POINT(-73.945826 40.80629)',
+  },
+])
+  
+
+    */
     
     console.log(`Adresse ausgewählt: ${suggestion.display_name}`);
-    console.log(`Geokoordinaten: Lat ${this.newPost.latitude}, Lng ${this.newPost.longitude}`);
+    console.log(`Geokoordinaten: Lat ${suggestion.lat}, Lng ${suggestion.lon}`);
     
     this.addressSuggestions = []; // Vorschläge ausblenden
   }
