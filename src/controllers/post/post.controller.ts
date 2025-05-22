@@ -31,7 +31,7 @@ export class PostController extends ApiController {
     });
   }
 
-  private async loadPosts() {
+  public async loadPosts() {
     // TODO: Filter
     const response = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select();
     this.posts.set(response.data as PostResponse[]);

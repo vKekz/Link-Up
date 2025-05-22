@@ -8,4 +8,6 @@ export interface PostResponse {
     creator_id: string;
     location: string;
     geo_location: string;
+    date: Date;
+    isOpen: boolean;
 }

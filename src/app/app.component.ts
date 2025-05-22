@@ -2,10 +2,11 @@ import { Component, ViewChild, signal } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, MapOverviewComponent, SidebarComponent],
+  imports: [RouterOutlet, MapOverviewComponent, SidebarComponent, CommonModule],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
   standalone: true,

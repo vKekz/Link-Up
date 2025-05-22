@@ -1,8 +1,35 @@
 <div class="container">
-    {{ this.post?.title }}
-    {{ this.post?.tags }}
-    {{ this.post?.open_to_join }}
-    {{ this.post?.location }}
-    {{ this.post?.description }}
-    <button (click)="this.deletePost()">Delete</button>
+    <div class="post-image-wrapper">
+        <img [src]="this.randomBackgroundUrl" alt="Event Image" class="post-image">
+    </div>
+
+    <div class="post-content">
+        <div class="post-header">
+            <span class="post-date">{{ this.post?.date}}</span> <h3 class="post-title">{{ this.post?.title }}</h3>
+        </div>
+
+        <div class="post-meta">
+            <span class="post-location">{{ this.post?.location }}</span>
+            
+            <span class="post-tags">
+                @for(tag of this.post?.tags; track tag){
+                {{ tag }}
+            }
+            </span>
+        </div>
+
+        <p class="post-description">{{ this.post?.description }}</p>
+
+        <div class="post-status">
+            <span class="status-badge" [ngClass]="eventStatusClass">{{ eventStatusText }}</span>
+        </div>
+        
+        <div class="post-footer">
+            <div class="user-profile">
+                <img src="" alt="User Profile" class="profile-pic">
+                <span class="user-name">John Doe</span> </div>
+            
+            <button (click)="this.deletePost()" class="delete-button">Delete</button>
+        </div>
+    </div>
 </div>

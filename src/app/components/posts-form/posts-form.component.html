@@ -1,36 +1,4 @@
-<!-- <div>
-    @for (post of this.getPosts(); track post.id) {
-        <app-post [post]="post"></app-post>
-    }
-    <button (click)="this.toggleForm()">toggle</button>
 
-    @if (this.shouldShowCreationForm) {
-        <div class="container">
-        <h2>Create New Post</h2>
-        <form  class="form">
-            <label for="postTitle">Title:</label>
-            <input [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" placeholder="Enter post title" required>
-
-            <label for="postTags">Tags (comma-separated):</label>
-            <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags" placeholder="e.g., event, fun, community">
-
-            <label for="postLocation">Location:</label>
-            <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location" placeholder="e.g., Central Park, Online">
-
-            <label for="postDescription">Description:</label>
-            <textarea [(ngModel)]="newPost.description" id="postDescription" name="description" placeholder="Tell us more about your post..." rows="5"></textarea>
-
-            <div class="checkbox-group">
-                <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join">
-                <label for="postOpenToJoin">Open to Join</label>
-            </div>
-
-            <button (click)="this.createPost()">Create Post</button>
-        </form>
-        <div id="formMessage" class="form-message"></div>
-    </div>
-    }
-</div> -->
 <div class="page-wrapper">
 
 <div class="post-grid">
@@ -48,16 +16,21 @@
             <form class="form" (click)="$event.stopPropagation()">
 
                 <label for="postTitle">Title:</label>
-                <input [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" required>
+                <input [class]="!this.newPost.title && this.hasTriedSubmit ? 'required' : ''" [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" required>
 
                 <label for="postTags">Tags:</label>
-                <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags">
+                <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags" required>
 
                 <label for="postLocation">Location:</label>
-                <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location">
+                <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location" required>
+
+                <label for="postDate">Date:</label>
+                <input [(ngModel)]="newPost.date" type="date" id="postDate" name="date" required=>
 
                 <label for="postDescription">Description:</label>
-                <textarea [(ngModel)]="newPost.description" id="postDescription" name="description" rows="5"></textarea>
+                <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description">
+
+                
 
                 <div class="checkbox-group">
                 <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join">
