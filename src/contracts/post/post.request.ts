@@ -5,4 +5,6 @@ export interface PostRequest {
     description?: string;
     open_to_join?: boolean;
     creator_id?: string;
+    latitude?: number;
+    longitude?: number;
 }
