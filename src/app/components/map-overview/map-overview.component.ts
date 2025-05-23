@@ -40,6 +40,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private maxLocationErrors = 3;
   private lastLocationFound = false;
   private hasLocationPermission = false;
+  private currentUserLocation: L.LatLng | null = null;
 
   private radius = signal(5000);
 
@@ -265,8 +266,14 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control location-button');
         container.innerHTML = '<a href="#" title="Zeige meinen Standort"><span class="location-icon">📍</span></a>';
         container.onclick = () => {
-          console.log('Locating user location')
-          this.locateUser();
+          console.log('Location button clicked');
+          if (this.currentUserLocation) {
+            console.log('Centering on stored user location:', this.currentUserLocation);
+            this.map?.setView(this.currentUserLocation, this.map.getZoom() || 14);
+          } else {
+            console.log('No stored user location, calling locateUser()');
+            this.locateUser();
+          }
           return false;
         };
         return container;
@@ -425,6 +432,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.hideLocatingAnimation();
       this.lastLocationFound = true;
       this.hasLocationPermission = true; // Mark permission as granted
+      this.currentUserLocation = e.latlng; // Store user's location
       this.locationErrorCount = 0;
       this.isLocating = false; // Stop locating
 
