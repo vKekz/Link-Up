@@ -55,10 +55,12 @@ export class PostController extends ApiController {
   public async loadPostsByLocation(longitude: number, latitude: number, radius_meters: number = 500): Promise<PostResponse[]> {
     // PostgreSQL-Funktion ST_DWithin, um Posts innerhalb eines bestimmten Radius zu finden
     // Benötigt PostGIS-Erweiterung in Supabase
-    const { data, error } = await this.supabaseClient.rpc('find_posts_within_distance', {
-      center_lon: longitude,
-      center_lat: latitude,
-      radius_meters: radius_meters,
+    console.log(`Lade Posts in einem Radius von ${radius_meters} Metern um (${longitude}, ${latitude})`);
+    const { data, error } = await this.supabaseClient.rpc('nearby_posts', {
+      longitude,
+      latitude,
+
+      radius_meters,
     });
     
     if (error) {

@@ -464,9 +464,10 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
    * @param latitude Breitengrad
    * @param radiusMeters Radius in Metern (optional)
    */
-  public async loadPostsNearLocation(longitude: number, latitude: number, radiusMeters: number = 50): Promise<void> {
+  public async loadPostsNearLocation(longitude: number, latitude: number, radiusMeters: number = 50000): Promise<void> {
+
     if (!this.map) return;
-    
+    console.log("Lade Posts in der Nähe...");
     try {
       // Lade-Anzeige darstellen
       this.showLoadingAnimation("Lade Posts...");
