@@ -1,4 +1,4 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, OnInit, signal, WritableSignal } from "@angular/core";
 import { PostResponse } from "../../../contracts/post/post.response";
 import { SupabaseService } from "../../../services/supabase.service";
 import { CommonModule } from "@angular/common";
@@ -9,14 +9,36 @@ import { CommonModule } from "@angular/common";
   templateUrl: "./post.component.html",
   styleUrl: "./post.component.css",
 })
-export class PostComponent {
+export class PostComponent implements OnInit {
   @Input()
   public post?: PostResponse;
 
+  protected hasJoinedChat: WritableSignal<boolean> = signal(false);
   protected randomBackgroundUrl: string = "";
 
   constructor(private readonly subabaseService: SupabaseService) {
     this.setRandomBackground();
+  }
+
+  async ngOnInit(): Promise<void> {
+    this.hasJoinedChat.set(await this.hasJoinedPostChat());
+  }
+
+  protected async hasJoinedPostChat() {
+    if (!this.post) {
+      return false;
+    }
+    return await this.subabaseService.getPostController().hasJoinedPostChat(this.post?.id);
+  }
+
+  protected async joinPost() {
+    const postId = this.post?.id;
+    if (!postId) {
+      return;
+    }
+
+    await this.subabaseService.getPostController().joinPostChat(postId);
+    this.hasJoinedChat.set(true);
   }
 
   protected async deletePost() {
