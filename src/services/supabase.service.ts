@@ -23,7 +23,7 @@ export class SupabaseService {
   constructor() {
     this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.userController = new UserController(this.supabaseClient);
-    this.postController = new PostController(this.supabaseClient);
+    this.postController = new PostController(this.supabaseClient, this.getUserController());
   }
   public getUserController(): UserController {
     if (!this.userController) {
@@ -32,7 +32,7 @@ export class SupabaseService {
 
     return this.userController;
   }
-  
+
   public getPostController(): PostController {
     if (!this.postController) {
       throw new ControllerNotInitializedException(`${PostController.name} not initialized`);
