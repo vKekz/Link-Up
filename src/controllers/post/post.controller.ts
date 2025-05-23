@@ -15,9 +15,11 @@ export class PostController extends ApiController {
   ) {
     super(supabaseClient);
     this.loadPosts();
+    console.log("PostController initialized");
   }
 
-  public async createPost(postRequest: PostRequest & { geo_location?: string }) {
+
+  public async createPost(postRequest: PostRequest & {geo_location?: string}) {
     //replace longitude and latitude with point
     if (postRequest.longitude && postRequest.latitude) {
       postRequest.geo_location = `POINT(${postRequest.longitude} ${postRequest.latitude})`;
@@ -113,7 +115,18 @@ export class PostController extends ApiController {
 
     return data as PostResponse[];
   }
+  public async loadPostById(id: string): Promise<PostResponse | null> {
+    const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select().eq('id', id).single();
+    
+    if (error) {
+      console.error("Fehler beim Laden des Posts:", error);
+      return null;
+    }
+    
+    return data as PostResponse;
 
+
+  }
   private async loadPosts() {
     const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select();
 
