@@ -203,6 +203,17 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         }
       }
 
+      // Get the center location for centering the map
+      let centerLocation: L.LatLng;
+
+      if (this.radiusCircle) {
+        // If radius circle exists, use its center (user's location or default location)
+        centerLocation = this.radiusCircle.getLatLng();
+      } else {
+        // Fallback to default location (DHBW Mannheim)
+        centerLocation = L.latLng(49.47457750584654, 8.534245487974458);
+      }
+
       // Update radius circle
       if (this.radiusCircle) {
         this.radiusCircle.setRadius(value);
@@ -211,10 +222,11 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       // Calculate and set appropriate zoom level based on radius
       const zoomLevel = this.calculateZoomFromRadius(value);
       if (this.map) {
-        this.map.setZoom(zoomLevel);
+        // Center the map on the location and set zoom
+        this.map.setView(centerLocation, zoomLevel);
       }
 
-      console.log('Radius changed to:', value, 'Zoom level:', zoomLevel);
+      console.log('Radius changed to:', value, 'Zoom level:', zoomLevel, 'Centered on:', centerLocation);
     });
 
     // Prevent map dragging when interacting with the slider
