@@ -1,10 +1,11 @@
 <div class="page-wrapper">
-  <div class="post-grid">
-    @for (post of this.getPosts(); track post.id) {
+  @if (this.showAllPosts == true){
+  <div class="post-grid" id="post-grid">
+     @for (post of this.getPosts(); track post.id) {
       <app-post [post]="post"></app-post>
     }
   </div>
-
+  }
   <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
 
   @if (this.shouldShowCreationForm) {

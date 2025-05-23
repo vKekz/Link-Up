@@ -28,6 +28,7 @@ export class PostsFormComponent implements OnInit, OnDestroy {
   public openToJoinInput?: ElementRef;
   public shouldShowCreationForm: boolean = false;
   public hasTriedSubmit: boolean = false;
+  public showAllPosts: boolean = true;
   public newPost: PostRequest = {
       title: "",
       date: new Date(Date.now()),
@@ -56,6 +57,28 @@ export class PostsFormComponent implements OnInit, OnDestroy {
     ).subscribe(term => {
       this.performAddressSearch(term);
     });
+
+    //check whether a posts uuid is passed in the url and set showAllPosts to false or true
+    // const url = location.href;
+    // const url = location.href;
+
+    //url http://localhost:4200/posts/ca8e2846-64b4-4026-8cdd-f8db024aa724
+
+
+    const url = location.pathname;
+    const regex = /\/posts\/([a-zA-Z0-9-]+)/;
+    const match = url.match(regex);
+    if (match) {
+      const postId = match[1];
+      console.log("Post ID:", postId);
+      this.showAllPosts = false;
+      // Hier können Sie den Post mit der ID postId abrufen und anzeigen
+      this.getPostById(postId);
+    }
+
+    /*
+    
+    */
   }
   
   ngOnDestroy(): void {
@@ -128,6 +151,9 @@ private resetForm() {
 
   protected getPosts(): PostResponse[] {
     return this.subabaseService.getPostController().posts();
+  }
+  protected async getPostById(postId: string): Promise<PostResponse | null> {
+    return await this.subabaseService.getPostController().loadPostById(postId);
   }
   protected readonly JSON = JSON;
     /**

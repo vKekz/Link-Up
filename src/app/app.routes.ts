@@ -28,4 +28,5 @@ export const routes: Routes = [
   { path: ROUTE_REGISTER, component: UserRegistrationFormComponent, canActivate: [SessionGuard], pathMatch: "full" },
   { path: ROUTE_LOGIN, component: UserLoginFormComponent, canActivate: [SessionGuard], pathMatch: "full" },
   { path: "menu", component: MenuButtonComponent, pathMatch: "full" },
+  { path: 'posts/:id', component: PostsFormComponent, pathMatch: "full" },
 ];
