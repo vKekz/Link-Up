@@ -34,8 +34,8 @@
       </div>
       @if (this.post?.open_to_join) {
         @if (this.hasJoinedChat()) {
-          <button class="joinButton">
-            <i class="bi bi-check"></i>
+          <button (click)="this.navigateToPostChat(this.post?.id)" class="joinButton chat">
+            <i class="bi bi-chat-fill"></i>
           </button>
         } @else {
           <button (click)="this.joinPost()" class="joinButton">Beitreten</button>

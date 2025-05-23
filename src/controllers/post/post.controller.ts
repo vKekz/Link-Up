@@ -68,6 +68,16 @@ export class PostController extends ApiController {
     });
   }
 
+  public async getPostChatId(postId: string) {
+    const response = await this.supabaseClient.from("post_chat").select().eq("post_id", postId);
+    const foundEntry = response.data?.at(0);
+    if (!foundEntry) {
+      return null;
+    }
+
+    return foundEntry.id;
+  }
+
   public async hasJoinedPostChat(postId: string) {
     const userId = this.userController.profileDetails()?.user_id;
     if (!userId) {

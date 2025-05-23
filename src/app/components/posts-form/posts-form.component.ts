@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { PostResponse } from "../../../contracts/post/post.response";
-import { CommonModule, NgClass } from "@angular/common";
+import { CommonModule } from "@angular/common";
 import { PostComponent } from "../post/post.component";
 import { FormsModule } from "@angular/forms";
 import { PostRequest } from "../../../contracts/post/post.request";
@@ -18,7 +18,7 @@ interface AddressSuggestion {
 @Component({
   selector: "app-posts-form",
   standalone: true,
-  imports: [CommonModule, NgClass, PostComponent, FormsModule],
+  imports: [CommonModule, PostComponent, FormsModule],
   templateUrl: "./posts-form.component.html",
   styleUrl: "./posts-form.component.css",
 })

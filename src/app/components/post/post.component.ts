@@ -2,6 +2,8 @@ import { Component, Input, OnInit, signal, WritableSignal } from "@angular/core"
 import { PostResponse } from "../../../contracts/post/post.response";
 import { SupabaseService } from "../../../services/supabase.service";
 import { CommonModule } from "@angular/common";
+import { Router } from "@angular/router";
+import { ROUTE_GROUP_CHAT, ROUTE_LOGIN } from "../../../constants/route.constants";
 
 @Component({
   selector: "app-post",
@@ -16,7 +18,10 @@ export class PostComponent implements OnInit {
   protected hasJoinedChat: WritableSignal<boolean> = signal(false);
   protected randomBackgroundUrl: string = "";
 
-  constructor(private readonly subabaseService: SupabaseService) {
+  constructor(
+    private readonly subabaseService: SupabaseService,
+    private readonly router: Router
+  ) {
     this.setRandomBackground();
   }
 
@@ -38,7 +43,22 @@ export class PostComponent implements OnInit {
     }
 
     await this.subabaseService.getPostController().joinPostChat(postId);
-    this.hasJoinedChat.set(true);
+    await this.navigateToPostChat(postId);
+  }
+
+  protected async navigateToPostChat(postId?: string) {
+    if (!postId) {
+      await this.router.navigate([`/${ROUTE_GROUP_CHAT}`]);
+      return;
+    }
+
+    const chatId = await this.subabaseService.getPostController().getPostChatId(postId);
+    if (!chatId) {
+      await this.router.navigate([`/${ROUTE_GROUP_CHAT}`]);
+      return;
+    }
+
+    await this.router.navigateByUrl(`/${ROUTE_GROUP_CHAT}?id=${chatId}`);
   }
 
   protected async deletePost() {
