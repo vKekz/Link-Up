@@ -1,7 +1,22 @@
-<div class="sidebarBox">
+<div class="sidebarBox" id="sidebarBox">
+  <button (click)="this.toggleSidebar()" id="sidebarEinklappen" class="sidebarEinklappen">
+    <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="32"
+    height="32"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="#000000"
+    stroke-width="1"
+    stroke-linecap="round"
+    stroke-linejoin="round">
+    <path d="M11 7l-5 5l5 5" />
+    <path d="M17 7l-5 5l5 5" />
+  </svg>
+  </button>
         <div class="sidebarLinkBox">
             <div class="sidebarLinks">
-              <a href="" class="sidebarLink">
+              <a href="/map" class="sidebarLink">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -18,10 +33,10 @@
                   <path d="M21.121 20.121a3 3 0 1 0 -4.242 0c.418 .419 1.125 1.045 2.121 1.879c1.051 -.89 1.759 -1.516 2.121 -1.879z" />
                   <path d="M19 18v.01" />
                 </svg>
-                Map</a>
+                <span>Map</span></a>
             </div>
             <div class="sidebarLinks">
-              <a href="" class="sidebarLink">
+              <a href="/posts" class="sidebarLink">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -39,10 +54,10 @@
                   <path d="M4 8h3" />
                   <path d="M4 20h1.5a1.5 1.5 0 0 0 0 -3h-1.5h1.5a1.5 1.5 0 0 0 0 -3h-1.5v6z" />
                 </svg>
-                Posts</a>
+                <span>Posts</span></a>
             </div>
             <div class="sidebarLinks">
-              <a href="" class="sidebarLink">
+              <a href="/group-chat" class="sidebarLink">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -56,10 +71,10 @@
                   <path d="M21 14l-3 -3h-7a1 1 0 0 1 -1 -1v-6a1 1 0 0 1 1 -1h9a1 1 0 0 1 1 1v10" />
                   <path d="M14 15v2a1 1 0 0 1 -1 1h-7l-3 3v-10a1 1 0 0 1 1 -1h2" />
                 </svg>
-                Chat</a>
+                <span>Chat</span></a>
             </div>
             <div class="sidebarLinks">
-              <a href="" class="sidebarLink">
+              <a href="group-chat" class="sidebarLink">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="40"
@@ -77,12 +92,12 @@
                   <path d="M5 5a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
                   <path d="M3 13v-1a2 2 0 0 1 2 -2h2" />
                 </svg>
-                Gruppe</a>
+                <span>Gruppe</span></a>
             </div>
         </div>
         <div class="sidebarProfileBox">
-            <button class="profileButton">
-              <svg
+            <button class="profileButton" (click)="this.router.navigate(['/settings'])">
+             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="40"
                 height="40"
@@ -95,8 +110,8 @@
                 <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
                 <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
               </svg>
-              <p>Profil</p></button>
-            <button class="settingsButton">
+              <p class="profileText">Profil</p></button>
+            <button class="settingsButton" (click)="this.router.navigate(['/settings'])">
                 <svg class="settingsWheel"
                   xmlns="http://www.w3.org/2000/svg"
                   width="32"
