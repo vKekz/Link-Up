@@ -8,6 +8,7 @@ import {
   ROUTE_HOME,
   ROUTE_LOGIN,
   ROUTE_MAP,
+  ROUTE_POSTS,
   ROUTE_REGISTER,
   ROUTE_SETTINGS,
 } from "../constants/route.constants";
@@ -16,13 +17,14 @@ import { GroupChatComponent } from "./components/group-chat/group-chat.component
 import { Routes } from "@angular/router";
 import { UserRegistrationFormComponent } from "./components/user-registration-form/user-registration-form.component";
 import { UserLoginFormComponent } from "./components/user-login-form/user-login-form.component";
+import { PostsFormComponent } from "./components/posts-form/posts-form.component";
 
 export const routes: Routes = [
   { path: ROUTE_HOME, component: LandingPageComponent, pathMatch: "full" },
   { path: ROUTE_MAP, component: MapOverviewComponent, canActivate: [AuthGuard], pathMatch: "full" },
   { path: ROUTE_GROUP_CHAT, component: GroupChatComponent, canActivate: [AuthGuard], pathMatch: "full" },
   { path: ROUTE_SETTINGS, component: UserSettingsComponent, canActivate: [AuthGuard], pathMatch: "full" },
-  { path: "posts", component: UserSettingsComponent, canActivate: [AuthGuard], pathMatch: "full" },
+  { path: ROUTE_POSTS, component: PostsFormComponent, canActivate: [AuthGuard], pathMatch: "full" },
   { path: ROUTE_REGISTER, component: UserRegistrationFormComponent, canActivate: [SessionGuard], pathMatch: "full" },
   { path: ROUTE_LOGIN, component: UserLoginFormComponent, canActivate: [SessionGuard], pathMatch: "full" },
   { path: "menu", component: MenuButtonComponent, pathMatch: "full" },
