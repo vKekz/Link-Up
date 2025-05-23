@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="header">
+    <div class="title">Profil - Einstellungen</div>
+    <div class="rating-text">
+      Social score: 99%
+      <i class="bi bi-hand-thumbs-up-fill rating"></i>
+    </div>
+    <div class="avatar">
+      <a href="{{ ROUTE_DASHBOARD }}">
+        <img src="{{ this.getProfileDetails()?.profileImageUrl }}" />
+      </a>
+    </div>
+  </div>
+  <div class="settings">
+    <div class="name-setting">
+      <label for="name">Benutzername:</label>
+      <input name="name" id="name" type="text" placeholder="{{ this.getProfileDetails()?.user_name }}" #nameInput />
+    </div>
+    <div class="image-setting">
+      <label for="image">Profilbild:</label>
+      <input name="image" id="image" type="file" accept="image/jpeg, image/png" #imageInput />
+    </div>
+    <div class="submit">
+      <button (click)="this.handleSubmit()">Änderungen speichern</button>
+    </div>
+    <div class="sign-out">
+      <button (click)="this.handleSignOut()">Abmelden</button>
+    </div>
+  </div>
+</div>

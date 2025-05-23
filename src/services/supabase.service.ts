@@ -15,14 +15,10 @@ import { UserController } from "../controllers/user/user.controller";
  * @remarks With the following comment some issues were resolved: https://github.com/supabase/supabase-js/issues/936#issuecomment-2691252604
  */
 export class SupabaseService {
-  public readonly supabaseClient?: SupabaseClient;
+  public readonly supabaseClient: SupabaseClient;
   private readonly userController?: UserController;
 
   constructor() {
-    if (this.supabaseClient) {
-      return;
-    }
-
     this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.userController = new UserController(this.supabaseClient);
   }
