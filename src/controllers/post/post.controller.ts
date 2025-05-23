@@ -13,7 +13,13 @@ export class PostController extends ApiController {
     this.loadPosts();
   }
 
-  public async createPost(postRequest: PostRequest) {
+  public async createPost(postRequest: PostRequest & {geo_location?: string}) {
+    //replace longitude and latitude with point
+    if (postRequest.longitude && postRequest.latitude) {
+      postRequest.geo_location = `POINT(${postRequest.longitude} ${postRequest.latitude})`;
+      delete postRequest.longitude;
+      delete postRequest.latitude;
+    }
     const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).insert(postRequest).select();
     
     if (error) {
