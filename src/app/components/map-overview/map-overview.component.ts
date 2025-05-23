@@ -1,6 +1,9 @@
-import { Component, AfterViewInit, Output, EventEmitter, signal, OnDestroy } from "@angular/core";
+import { Component, AfterViewInit, Output, EventEmitter, signal, OnDestroy, inject } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import * as L from "leaflet";
+import { SupabaseService } from "../../../services/supabase.service";
+import { PostResponse } from "../../../contracts/post/post.response";
+import { PostController } from "../../../controllers/post/post.controller";
 
 export interface Marker {
   lat: number;
@@ -24,6 +27,12 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     { lat: 40.7128, lng: -74.006, title: "New York", description: "The Big Apple" },
   ]);
   private locationMarker: L.LayerGroup | null = null;
+  private postMarkers: L.Marker[] = [];
+  
+  // Service injizieren
+  private supabaseService = inject(SupabaseService);
+  
+  
   
   // Status-Variablen für die Standortverfolgung
   private isLocating = false;
@@ -101,7 +110,6 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     this.locateUser();
 
     // Standort-Button zur Karte hinzufügen
-    this.addLocationButton();
   }
 
   private addMarkers(): void {
@@ -397,10 +405,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         locationButton.classList.remove('active');
       }
     }
-  }
+  
 
-  // Button zum Zentrieren auf Benutzerstandort
-  private addLocationButton(): void {
+  // Button zum Zentrieren auf Benutzerstandort  private addLocationButton(): void {
     if (!this.map) return;
 
     // Erstelle einen benutzerdefinierten Steuerungsbutton
@@ -424,6 +431,208 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
 
     // Button zur Karte hinzufügen
     this.map.addControl(new locationControl());
+    
+    // Button zum Laden von Posts in der Nähe hinzufügen
+    const loadPostsControl = L.Control.extend({
+      options: {
+        position: 'bottomright'
+      },
+      
+      onAdd: () => {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control posts-button');
+        container.innerHTML = '<a href="#" title="Posts in der Umgebung laden"><span class="posts-icon">📋</span></a>';
+        
+        container.onclick = () => {
+          if (this.map) {
+            const center = this.map.getCenter();
+            this.loadPostsNearLocation(center.lng, center.lat);
+          }
+          return false;
+        };
+        
+        return container;
+      }
+    });
+    
+    // Button zur Karte hinzufügen
+    this.map.addControl(new loadPostsControl());
+  }
+  
+  /**
+   * Lädt Posts aus Supabase basierend auf Standort und zeigt sie als Marker an
+   * @param longitude Längengrad
+   * @param latitude Breitengrad
+   * @param radiusKm Radius in Kilometern (optional)
+   */
+  public async loadPostsNearLocation(longitude: number, latitude: number, radiusKm: number = 50): Promise<void> {
+    if (!this.map) return;
+    
+    try {
+      // Lade-Anzeige darstellen
+      this.showLoadingAnimation("Lade Posts...");
+      
+      // Posts in der Nähe laden
+      const posts = await this.supabaseService.getPostController().loadPostsByLocation(longitude, latitude, radiusKm);
+      
+      console.log(`${posts.length} Posts in der Nähe gefunden.`);
+      
+      // Bestehende Post-Marker entfernen
+      this.clearPostMarkers();
+      
+      // Neue Marker für jeden Post hinzufügen
+      posts.forEach(post => this.addPostMarker(post));
+      
+      // Lade-Anzeige entfernen
+      this.hideLoadingAnimation();
+      
+    } catch (error) {
+      console.error("Fehler beim Laden der Posts:", error);
+      this.hideLoadingAnimation();
+      
+      // Visuelle Fehlermeldung anzeigen
+      if (this.map) {
+        const errorMsg = L.DomUtil.create('div', 'location-error-message');
+        errorMsg.id = 'postsErrorMessage';
+        errorMsg.innerHTML = `
+          <div class="error-container">
+            <strong>Fehler beim Laden der Posts</strong>
+            <p>Die Posts konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>
+          </div>
+        `;
+        
+        const container = L.DomUtil.get('map');
+        if (container) {
+          container.appendChild(errorMsg);
+          
+          // Nach 5 Sekunden ausblenden
+          setTimeout(() => {
+            if (container.contains(errorMsg)) {
+              container.removeChild(errorMsg);
+            }
+          }, 5000);
+        }
+      }
+    }
+  }
+  
+  /**
+   * Fügt einen Marker für einen Post hinzu
+   * @param post Der Post mit Geokoordinaten
+   */
+  private addPostMarker(post: PostResponse): void {
+    if (!this.map) return;
+    
+    
+    
+    // Marker-Icon anpassen
+    const postIcon = L.icon({
+      iconUrl: "assets/post-marker.png", // Stelle sicher, dass diese Datei existiert oder nutze ein Standard-Icon
+      iconSize: [26, 35],
+      iconAnchor: [13, 35],
+      popupAnchor: [1, -34],
+      shadowUrl: "assets/marker-shadow.png",
+      shadowSize: [41, 41],
+    });
+    
+    // Fallback auf Standard-Icon
+    const icon = postIcon.options.iconUrl ? postIcon : new L.Icon.Default();
+    const latitude = post.latitude || 0;
+    const longitude = post.longitude || 0;
+    // Marker erstellen und zur Karte hinzufügen
+    const marker = L.marker(
+      [latitude, longitude], 
+      { icon: icon }
+    ).addTo(this.map);
+    
+    // Popup mit Informationen erstellen
+    marker.bindPopup(`
+      <div class="marker-popup post-marker">
+        <h3>${post.title}</h3>
+        <p>${post.description || 'Keine Beschreibung'}</p>
+        <div class="post-tags">
+          ${post.tags ? post.tags.map(tag => `<span class="tag">${tag}</span>`).join(' ') : ''}
+        </div>
+        <button class="btn-details" data-post-id="${post.id}">
+          Details anzeigen
+        </button>
+      </div>
+    `);
+    
+    // Event-Handler für das Popup
+    marker.on("popupopen", () => {
+      setTimeout(() => {
+        const popupContent = marker.getPopup()?.getElement();
+        const detailButton = popupContent?.querySelector(".btn-details");
+        
+        if (detailButton) {
+          detailButton.addEventListener(
+            "click",
+            () => {
+              const postId = detailButton.getAttribute("data-post-id");
+              if (postId) {
+                // Event für Postdetails emittieren
+                this.markerClicked.emit(post.title);
+                console.log(`Post-Details angefordert für ID: ${postId}`);
+                // Hier könnten Sie zu einer Detailansicht navigieren
+              }
+            },
+            { once: true }
+          );
+        }
+      }, 0);
+    });
+    
+    // Marker speichern, um sie später entfernen zu können
+    this.postMarkers.push(marker);
+  }
+  
+  /**
+   * Entfernt alle Post-Marker von der Karte
+   */
+  private clearPostMarkers(): void {
+    if (!this.map) return;
+    
+    // Alle Marker entfernen
+    this.postMarkers.forEach(marker => {
+      this.map?.removeLayer(marker);
+    });
+    
+    // Array zurücksetzen
+    this.postMarkers = [];
+  }
+  
+  /**
+   * Zeigt eine Ladeanimation für das Laden von Posts an
+   */
+  private showLoadingAnimation(message: string = "Lädt..."): void {
+    const container = L.DomUtil.get('map');
+    if (!container) return;
+    
+    // Entferne vorhandene Animation falls vorhanden
+    this.hideLoadingAnimation();
+    
+    // Erstelle das Lade-Element
+    const loadingElement = L.DomUtil.create('div', 'posts-loading-animation');
+    loadingElement.id = 'postsLoadingAnimation';
+    loadingElement.innerHTML = `
+      <div class="location-spinner">
+        <div class="spinner"></div>
+        <p>${message}</p>
+      </div>
+    `;
+    
+    container.appendChild(loadingElement);
+  }
+  
+  /**
+   * Entfernt die Ladeanimation
+   */
+  private hideLoadingAnimation(): void {
+    const container = L.DomUtil.get('map');
+    const loadingElement = document.getElementById('postsLoadingAnimation');
+    if (container && loadingElement && container.contains(loadingElement)) {
+      container.removeChild(loadingElement);
+    }
   }
 
   private resizeMap(): void {
