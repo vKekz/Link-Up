@@ -1,5 +1,5 @@
 export interface PostRequest {
-    id: string;
+    id?: string;
     title: string;
     tags?: string[];
     location?: string;
@@ -9,4 +9,5 @@ export interface PostRequest {
     created_at?: string;
     longitude?: number;
     latitude?: number;
+    date: Date;
 }

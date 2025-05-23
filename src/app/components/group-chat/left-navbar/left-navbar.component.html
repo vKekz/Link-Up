@@ -1,0 +1,33 @@
+<div class="sidebar">
+  <h1 class="logo">Chats</h1>
+  <hr class="divider" />
+  <h2 class="section-title">Event Group Chats</h2>
+  <hr class="divider" />
+
+  <ul class="event-list">
+    @if (events().length > 0) {
+      @for (event of events(); track event.post_chat_id) {
+        <a class="no-underline" routerLink="/group-chat" [queryParams]="{ id: event.post_chat_id }">
+          <li class="event-item">
+            <div class="event-details">
+              <span class="event-title">{{ event.title }}</span>
+            </div>
+            <div class="last-message">
+              <span class="last-message-text">{{ event.message || "No messages yet" }}</span>
+              <span class="last-message-time">{{ event.message_created_at | date: "MMM d, yyyy" }}</span>
+              <span class="last-message-sender">{{ event.sender_email }}</span>
+              @if (event.unread_count > 0) {
+                <span class="last-message-count">{{ event.unread_count }}</span>
+              }
+            </div>
+          </li>
+          <hr class="divider" />
+        </a>
+      }
+    } @else {
+      <li class="event-item">
+        <span class="event-title">No chats were found</span>
+      </li>
+    }
+  </ul>
+</div>

@@ -1,0 +1,207 @@
+    
+.container {
+    background-color: var(--color-palette-white);
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-primary);
+    color: var(--color-palette-dark-gray);
+    display: flex;
+    flex-direction: column;
+    /* Remove padding here, it will be added to .post-content */
+    overflow: hidden; /* Ensures image corners are rounded with container */
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Combine transitions */
+}
+
+.container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* --- Image Styling --- */
+.post-image-wrapper {
+    width: 100%;
+    /* Maintain aspect ratio for images */
+    padding-bottom: 50%; /* 2:1 aspect ratio (height is 50% of width) */
+    position: relative;
+    overflow: hidden;
+}
+
+.post-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Covers the area without distortion */
+    border-top-left-radius: 10px; /* Match container border-radius */
+    border-top-right-radius: 10px; /* Match container border-radius */
+}
+
+/* --- Content Area Styling --- */
+.post-content {
+    padding: 15px 20px; /* Padding for the text content */
+    display: flex;
+    flex-direction: column;
+    gap: 12px; /* Space between content sections */
+}
+
+/* --- Header (Date & Title) Styling --- */
+.post-header {
+    display: flex;
+    flex-direction: column;
+    gap: 4px; /* Space between date and title */
+}
+
+.post-date {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--color-palette-teal); /* Highlight the date */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.post-title {
+    font-family: var(--font-secondary-wide); /* Use your wider font */
+    font-size: 1.5em; /* Larger, more prominent title */
+    color: var(--color-palette-dark-teal);
+    margin: 0; /* Remove default margin from h3 */
+    line-height: 1.3;
+}
+
+/* --- Meta (Location & Tags) Styling --- */
+.post-meta {
+    font-size: 0.9em;
+    color: var(--color-palette-gray);
+    display: flex;
+    flex-wrap: wrap; /* Allow tags/location to wrap if too long */
+    gap: 8px; /* Space between meta items */
+}
+.post-location{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var( --color-palette-light-teal);
+}
+.post-tags{
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color:var( --color-palette-light-green);
+}
+.post-location::before {
+    content: '📍'; /* Location icon */
+    font-size: 1.1em;
+
+}
+
+.post-tags::before {
+    content: '🏷️'; /* Tag icon */
+    font-size: 1.1em;
+}
+
+
+/* --- Description Styling --- */
+.post-description {
+    font-size: 0.95em;
+    line-height: 1.6;
+    margin: 0; /* Remove default paragraph margin */
+    color: var(--color-palette-dark-gray);
+    /* Add text truncation if description is too long */
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Show up to 3 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- Status Badge Styling --- */
+.post-status {
+    margin-top: auto; /* Push status and footer to bottom if content is short */
+    display: flex;
+    justify-content: flex-end; /* Align badge to the right */
+}
+
+.status-badge {
+    font-size: 0.8em;
+    font-weight: 700;
+    padding: 6px 10px;
+    border-radius: 20px; /* Pill shape */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-open {
+    background-color: var(--color-palette-light-teal);
+    color: var(--color-palette-dark-teal);
+}
+
+.status-closed {
+    background-color: #ffe0e0;
+    color: #cc0000;
+}
+
+/* --- Footer (Profile & Button) Styling --- */
+.post-footer {
+    display: flex;
+    justify-content: space-between; /* Pushes items to ends */
+    align-items: center;
+    margin-top: 15px; /* Space from description/status */
+    padding-top: 15px;
+    border-top: 1px solid var(--color-palette-light-gray); /* Separator line */
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between pic and name */
+}
+
+.profile-pic {
+    width: 40px; /* Size of profile picture */
+    height: 40px;
+    border-radius: 50%; /* Makes it circular */
+    object-fit: cover; /* Ensures image covers circular area */
+    border: 2px solid var(--color-palette-teal); /* Small border */
+}
+
+.user-name {
+    font-weight: 600;
+    color: var(--color-palette-dark-gray);
+    font-family: var(--font-secondary);
+}
+
+/* --- Delete Button Styling --- */
+.delete-button { /* Changed from .container button */
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 0.9em;
+    font-weight: 600;
+}
+
+.delete-button:hover {
+    background-color: #cc0000;
+}
+.joinButton {
+    width: 110px;
+    padding: 10px; /* More padding for button */
+    background-color: var(--color-palette-teal); /* Teal button */
+    color: var(--color-palette-white);
+    border: none;
+    border-radius: 9px; /* More rounded button */
+    cursor: pointer;
+    font-size: 1em; /* Larger font size */
+    font-weight: 600; /* Bolder button text */
+    font-family: var(--font-secondary-wide); /* Wide font for button */
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+.joinButton:hover {
+    background-color: var(--color-palette-dark-teal); /* Darker teal on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}.joinButton:active {
+    transform: translateY(0); /* Press effect */
+}

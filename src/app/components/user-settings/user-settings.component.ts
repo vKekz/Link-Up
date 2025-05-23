@@ -1,7 +1,7 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { Router } from "@angular/router";
-import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
+import { ROUTE_MAP } from "../../../constants/route.constants";
 
 @Component({
   selector: "app-user-settings",
@@ -64,5 +64,5 @@ export class UserSettingsComponent {
     await this.supabaseService.getUserController().uploadProfileImage(file);
   }
 
-  protected readonly ROUTE_DASHBOARD = ROUTE_DASHBOARD;
+  protected readonly ROUTE_DASHBOARD = ROUTE_MAP;
 }

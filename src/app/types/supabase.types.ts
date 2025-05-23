@@ -9,57 +9,233 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      "group-events": {
+      post_chat: {
         Row: {
-          id: number
+          created_at: string
+          id: string
+          post_id: string | null
+          profile_photo: string | null
+          title: string | null
         }
         Insert: {
-          id?: number
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          profile_photo?: string | null
+          title?: string | null
         }
         Update: {
-          id?: number
+          created_at?: string
+          id?: string
+          post_id?: string | null
+          profile_photo?: string | null
+          title?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "post_chat_post_id_fkey1"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_chat_messages: {
+        Row: {
+          created_at: string
+          id: string
+          message: string
+          post_chat_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          message: string
+          post_chat_id: string
+          sender_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          message?: string
+          post_chat_id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_chat_messages_post_chat_id_fkey"
+            columns: ["post_chat_id"]
+            isOneToOne: false
+            referencedRelation: "post_chat"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_participants: {
+        Row: {
+          created_at: string | null
+          id: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_participants_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "posts"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       posts: {
         Row: {
-          created_at: string | null
+          created_at: string
           creator_id: string
+          date: string | null
           description: string | null
+          geo_data: unknown | null
           id: string
-          join_policy: string | null
-          participants: string[] | null
+          location: string | null
+          open_to_join: boolean
           tags: string[] | null
           title: string
         }
         Insert: {
-          created_at?: string | null
-          creator_id: string
+          created_at?: string
+          creator_id?: string
+          date?: string | null
           description?: string | null
+          geo_data?: unknown | null
           id?: string
-          join_policy?: string | null
-          participants?: string[] | null
+          location?: string | null
+          open_to_join?: boolean
           tags?: string[] | null
           title: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           creator_id?: string
+          date?: string | null
           description?: string | null
+          geo_data?: unknown | null
           id?: string
-          join_policy?: string | null
-          participants?: string[] | null
+          location?: string | null
+          open_to_join?: boolean
           tags?: string[] | null
           title?: string
         }
         Relationships: []
+      }
+      profiles: {
+        Row: {
+          id: string
+          user_id: string | null
+          user_name: string | null
+        }
+        Insert: {
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Update: {
+          id?: string
+          user_id?: string | null
+          user_name?: string | null
+        }
+        Relationships: []
+      }
+      user_group_chat_last_seen: {
+        Row: {
+          last_seen_message_timestamp: string | null
+          post_chat_id: string
+          user_id: string
+        }
+        Insert: {
+          last_seen_message_timestamp?: string | null
+          post_chat_id: string
+          user_id: string
+        }
+        Update: {
+          last_seen_message_timestamp?: string | null
+          post_chat_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_group_chat_last_seen_post_chat_id_fkey"
+            columns: ["post_chat_id"]
+            isOneToOne: false
+            referencedRelation: "post_chat"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_post_chat_details: {
+        Args: { p_post_chat_id: string }
+        Returns: {
+          title: string
+          participant_count: number
+          event_date: string
+          tags: string[]
+        }[]
+      }
+      get_post_chat_messages: {
+        Args: { post_chat_id: string }
+        Returns: {
+          post_id: string
+          message_id: string
+          message_created_at: string
+          message_content: string
+          message_sender_id: string
+          profile_name: string
+          profile_id: string
+          user_email: string
+        }[]
+      }
+      get_unread_message_count: {
+        Args: { p_user_id: string; p_post_chat_id: string }
+        Returns: number
+      }
+      get_user_chat_threads: {
+        Args: { input_user_id: string }
+        Returns: {
+          post_id: string
+          post_chat_created_at: string
+          post_chat_id: string
+          chat_photo: string
+          title: string
+          message: string
+          sender_id: string
+          message_created_at: string
+          sender_email: string
+          fullname: string
+          profile_id: string
+        }[]
+      }
+      mark_chat_as_seen: {
+        Args: { p_user_id: string; p_post_chat_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

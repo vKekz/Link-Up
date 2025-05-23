@@ -1,0 +1,46 @@
+<div class="container">
+  <div class="post-image-wrapper">
+    <img [src]="this.randomBackgroundUrl" alt="Event Image" class="post-image" />
+  </div>
+
+  <div class="post-content">
+    <div class="post-header">
+      <span class="post-date">{{ this.post?.date }}</span>
+      <h3 class="post-title">{{ this.post?.title }}</h3>
+    </div>
+
+    <div class="post-meta">
+      <span class="post-location">{{ this.post?.location }}</span>
+
+      <span class="post-tags">
+        @for (tag of this.post?.tags; track tag) {
+          #{{ tag }}
+        }
+      </span>
+    </div>
+
+    <p class="post-description">{{ this.post?.description }}</p>
+
+    <div class="post-status">
+      <span class="status-badge" [ngClass]="eventStatusClass">{{ eventStatusText }}</span>
+    </div>
+
+    <div class="post-footer">
+      <div class="user-profile">
+        @if (this.post?.creator_profile) {
+          <img src="{{ this.post?.creator_profile?.profileImageUrl }}" alt="User Profile" class="profile-pic" />
+        }
+        <span class="user-name">{{ post?.creator_profile?.user_name ?? "Nicht gefunden" }}</span>
+      </div>
+      @if (this.post?.open_to_join) {
+        @if (this.hasJoinedChat()) {
+          <button class="joinButton">
+            <i class="bi bi-check"></i>
+          </button>
+        } @else {
+          <button (click)="this.joinPost()" class="joinButton">Beitreten</button>
+        }
+      }
+    </div>
+  </div>
+</div>

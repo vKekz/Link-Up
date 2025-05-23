@@ -21,4 +21,13 @@ export interface EnvironmentVariables {
    * Redirect URL that is used when signing up or in a user.
    */
   supabaseEmailRedirectTo?: string;
+
+  /**
+   * URL for Geolocation API.
+   */
+  geolocationApiUrl?: string;
+  /**
+   * API Key for Geolocation API.
+   */
+  geolocationApiKey?: string;
 }
