@@ -4,6 +4,7 @@ import * as L from "leaflet";
 import { SupabaseService } from "../../../services/supabase.service";
 import { PostResponse } from "../../../contracts/post/post.response";
 import { PostController } from "../../../controllers/post/post.controller";
+import { Router } from "@angular/router";
 
 export interface Marker {
   lat: number;
@@ -45,6 +46,12 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private radius = signal(5000);
 
   @Output() markerClicked = new EventEmitter<string>();
+
+  constructor(private readonly router:Router) {
+    // Initialisiere den Radius
+    // this.radius.set(5000);
+    
+  }
 
   ngAfterViewInit(): void {
     console.log("NG after view init");
@@ -785,6 +792,8 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
                 console.log(`Post-Details angefordert für ID: ${postId}`);
                 // TODO navigate to Posts detail Page
                 // this.router.navigate(['/posts', postId]);
+                this.router.navigate(['/posts', postId]);
+
 
               }
             },
