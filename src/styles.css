@@ -26,6 +26,9 @@
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   background-color: var(--color-palette-dark-gray);
   font-family: "Ubuntu", sans-serif;
 }
@@ -199,8 +202,4 @@ body {
   src: url("/assets/fonts/polysansitalictrial-bulkywideitalic.otf") format("opentype");
   font-weight: 800;
   font-style: italic;
-}
-* {
-  margin: 0;
-  padding: 0;
 }
