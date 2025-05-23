@@ -87,14 +87,15 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       const numberLongitude = this.selectedAddress ? parseFloat(this.selectedAddress.lon) : undefined;
       const numberLatitude = this.selectedAddress ? parseFloat(this.selectedAddress.lat) : undefined;
       if (numberLongitude !== undefined && numberLatitude !== undefined) {
-        this.newPost.geo_data = `POINT(${numberLongitude} ${numberLatitude})`;
-        console.log(`Geokoordinaten: ${this.newPost.geo_data}`);
+        this.newPost.latitude = numberLatitude;
+        this.newPost.longitude = numberLongitude;
+        // console.log(`Geokoordinaten: ${this.newPost.geo_data}`);
       } else {
-        this.newPost.geo_data = undefined;
+        
       }
         // Ausgabe der Geokoordinaten vor dem Speichern
       if (this.newPost) {
-        console.log(`Post wird erstellt mit Geokoordinaten: ${this.newPost.geo_data}`);
+        // console.log(`Post wird erstellt mit Geokoordinaten: ${this.newPost.geo_data}`);
       } else {
         console.log('Post wird ohne Geokoordinaten erstellt');
       }
@@ -117,7 +118,7 @@ private resetForm() {
       location: '',
       description: '',
       open_to_join: false,
-      geo_data: null,
+      // geo_data: null,
     }; 
     this.tagsInput = '';
     this.selectedAddress = null;
@@ -171,8 +172,8 @@ private resetForm() {
   public selectAddress(suggestion: AddressSuggestion): void {
     this.selectedAddress = suggestion;
     this.newPost.location = suggestion.display_name;
-    this.newPost.geo_data = `POINT(${parseFloat(suggestion.lon)} ${parseFloat(suggestion.lat)})`; // Geokoordinaten setzen
-    
+    this.newPost.longitude = parseFloat(suggestion.lon); // Longitude speichern
+    this.newPost.latitude = parseFloat(suggestion.lat); // Latitude speichern
     // Koordinaten speichern
     
     /*
