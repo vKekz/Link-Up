@@ -1,5 +1,9 @@
-<div class="app-container">
-  <div class="main-content">
-    <router-outlet></router-outlet>
+<main class="main">
+  @if (this.isSideBarCompatible()) {
+    <app-sidebar></app-sidebar>
+  }
+
+  <div class="sub-container">
+    <router-outlet />
   </div>
-</div>
+</main>

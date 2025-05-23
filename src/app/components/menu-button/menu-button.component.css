@@ -1,0 +1,66 @@
+.menu-container{
+  margin: 1em;
+}
+
+.menu-dropdown{
+  display: flex;
+  cursor: pointer;
+  user-select: none;
+  justify-self: right;
+  justify-content: center;
+  align-items: center;
+  width: 3em;
+  height: 3em;
+  margin: 1em;
+  background: blur(5px);
+  border-radius: 50%;
+  border: none;
+  transition: 0.5s ease;
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24;
+  transform: rotate(90deg);
+  transition: transform 1s ease;
+}
+
+.menu-content{
+  display: flex;
+  visibility: hidden;
+  background: #028090;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 1em;
+  flex-direction: column;
+  justify-content: center;
+  justify-self: right;
+  align-items: center;
+  width: 12em;
+  height: auto;
+  transition:
+    opacity 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    visibility 0.5s ease;
+  z-index: 100;
+}
+
+.menu-buttons{
+  display: flex;
+  cursor: pointer;
+  user-select: none;
+  width: 90%;
+  justify-content: center;
+  margin: 0.5em;
+  padding: 0.5em 1em;
+  border: none;
+  background: white; 
+  border-radius: 0.5em;
+  font-size: 1em;
+}
+
+.menu-buttons:hover{
+ filter: brightness(90%);
+}
