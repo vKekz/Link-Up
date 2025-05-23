@@ -32,8 +32,32 @@ export class PostController extends ApiController {
   }
 
   public async loadPosts() {
-    // TODO: Filter
-    const response = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select();
-    this.posts.set(response.data as PostResponse[]);
+    const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select();
+
+    if (error) {
+      console.error("Error loading posts:", error);
+      return;
+    }
+
+    const mappedPosts: PostResponse[] = data.map(item => this.mapSupabasePostToResponse(item));
+    this.posts.set(mappedPosts);
   }
+
+  private mapSupabasePostToResponse(rawPost: any): PostResponse {
+
+    return {
+      id: rawPost.id,
+      title: rawPost.title,
+      tags: rawPost.tags || [],
+      location: rawPost.location,
+      description: rawPost.description,
+      creator_id: rawPost.creator_id,
+      date: rawPost.date,
+      isOpen: rawPost.open_to_join,
+      created_at: rawPost.created_at,
+      open_to_join: rawPost.open_to_join,
+      geo_location: rawPost.geo_location 
+    };
+  }
+  
 }

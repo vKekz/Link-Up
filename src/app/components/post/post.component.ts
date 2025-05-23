@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, computed, Input, OnInit } from '@angular/core';
 import { PostResponse } from '../../../contracts/post/post.response';
 import { SupabaseService } from '../../../services/supabase.service';
 import { CommonModule } from '@angular/common';
@@ -14,6 +14,7 @@ export class PostComponent  {
   public post?: PostResponse;
 
   protected randomBackgroundUrl: string = '';
+
 
   constructor(private readonly subabaseService: SupabaseService) {
     this.setRandomBackground();
@@ -37,7 +38,7 @@ export class PostComponent  {
   }
 
   get eventStatusText(): string {
-    return this.post?.isOpen ? 'Open to Join' : 'Closed';
+    return this.post?.isOpen ? 'Öffentlich beiträtbar' : 'Geschlossen';
   }
 
   get eventStatusClass(): string {

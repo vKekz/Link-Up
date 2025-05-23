@@ -7,37 +7,35 @@
     }
 </div>
 
-    <button class="toggle-btn" (click)="this.toggleForm()">Create an Event</button>
+    <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
 
     @if (this.shouldShowCreationForm) {
         <div class="modal-overlay" (click)="this.toggleForm()"></div>
         <div class="modal">
-            <h2>Create New Post</h2>
+            <h2>Erstelle eine neuen Post</h2>
             <form class="form" (click)="$event.stopPropagation()">
 
-                <label for="postTitle">Title:</label>
+                <label for="postTitle">Titel:</label>
                 <input [class]="!this.newPost.title && this.hasTriedSubmit ? 'required' : ''" [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" required>
 
                 <label for="postTags">Tags:</label>
                 <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags" required>
 
-                <label for="postLocation">Location:</label>
+                <label for="postLocation">Ort:</label>
                 <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location" required>
 
-                <label for="postDate">Date:</label>
+                <label for="postDate">Dateum:</label>
                 <input [(ngModel)]="newPost.date" type="date" id="postDate" name="date" required=>
 
-                <label for="postDescription">Description:</label>
-                <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description">
-
-                
+                <label for="postDescription">Beschreibung:</label>
+                <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description">              
 
                 <div class="checkbox-group">
                 <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join">
-                    <label for="postOpenToJoin">Open to Join</label>
+                    <label for="postOpenToJoin">Öffentlich beiträtbar</label>
                 </div>
 
-                <button class="createButton" (click)="this.createPost()">Create Post</button>
+                <button class="createButton" (click)="this.createPost()">Post erstellen</button>
             </form>
         </div>
     }

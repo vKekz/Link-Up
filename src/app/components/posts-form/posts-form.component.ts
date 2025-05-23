@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, computed } from '@angular/core';
 import { SupabaseService } from '../../../services/supabase.service';
 import { PostResponse } from '../../../contracts/post/post.response';
 import { NgClass, NgFor } from '@angular/common';
@@ -27,6 +27,7 @@ export class PostsFormComponent {
 } = {};
   public tagsInput: string = ''
 
+
   constructor(private readonly subabaseService: SupabaseService) {
   }
 
@@ -46,8 +47,7 @@ export class PostsFormComponent {
 
       this.newPost.creator_id = userId;
       let tags = this.newPost.tags.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
-      console.log(this.tagsInput)
-      console.log(this.newPost)
+      console.log(this.newPost);
 
       await this.subabaseService.getPostController().createPost({
         ...this.newPost,
