@@ -58,7 +58,7 @@ export class PostComponent implements OnInit {
   }
 
   get eventStatusText(): string {
-    return this.post?.open_to_join ? "Öffentlich beiträtbar" : "Geschlossen";
+    return this.post?.open_to_join ? "Öffentlich beitretbar" : "Geschlossen";
   }
 
   get eventStatusClass(): string {
