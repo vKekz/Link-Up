@@ -19,12 +19,12 @@
                 <input [class]="!this.newPost.title && this.hasTriedSubmit ? 'required' : ''" [(ngModel)]="newPost.title" type="text" id="postTitle" name="title" required>
 
                 <label for="postTags">Tags:</label>
-                <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags" required>
+                <input [(ngModel)]="this.tagsInput" type="text" id="postTags" name="tags" required>
 
                 <label for="postLocation">Ort:</label>
                 <input [(ngModel)]="newPost.location" type="text" id="postLocation" name="location" required>
 
-                <label for="postDate">Dateum:</label>
+                <label for="postDate">Datum:</label>
                 <input [(ngModel)]="newPost.date" type="date" id="postDate" name="date" required=>
 
                 <label for="postDescription">Beschreibung:</label>

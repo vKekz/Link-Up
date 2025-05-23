@@ -9,4 +9,5 @@ export interface PostResponse {
     created_at?: string;
     longitude?: number;
     latitude?: number;
+    date: Date;
 }

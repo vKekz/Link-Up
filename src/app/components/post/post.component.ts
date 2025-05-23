@@ -38,10 +38,10 @@ export class PostComponent  {
   }
 
   get eventStatusText(): string {
-    return this.post?.isOpen ? 'Öffentlich beiträtbar' : 'Geschlossen';
+    return this.post?.open_to_join ? 'Öffentlich beiträtbar' : 'Geschlossen';
   }
 
   get eventStatusClass(): string {
-    return this.post?.isOpen ? 'status-open' : 'status-closed';
+    return this.post?.open_to_join ? 'status-open' : 'status-closed';
   }
 }
