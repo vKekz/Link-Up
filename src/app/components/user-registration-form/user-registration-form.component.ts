@@ -1,6 +1,9 @@
 import { Component, signal, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserRegistrationResponse } from "../../../contracts/user/user-registration.response";
+import { Router } from "@angular/router";
+import { ROUTE_MAP } from "../../../constants/route.constants";
+import { NgClass } from "@angular/common";
 
 @Component({
   selector: "app-user-registration-form",
@@ -35,7 +38,12 @@ export class UserRegistrationFormComponent {
       return;
     }
 
-    const response = await this.supabaseService.getUserController().signUpUser(this.email, this.password);
+    const response = await this.supabaseService.getUserController().signUpUser(this.name, this.email, this.password);
+    if (!response.error) {
+      await this.router.navigate(["/", ROUTE_MAP]);
+      return;
+    }
+
     this.response.set(response);
   }
 

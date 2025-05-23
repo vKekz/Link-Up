@@ -1,0 +1,14 @@
+:host {
+    display: block;
+    height: 100vh;
+    background-color: var(--color-palette-white);
+    overflow-x: hidden;
+}
+
+.group-chat-container {
+    display: flex;
+    flex-direction: row;
+    background-color: var(--color-palette-white);
+    color: var(--color-palette-dark-gray);
+    font-family: var(--font-primary);
+}

@@ -2,30 +2,261 @@
     position: relative;
     height: 100vh;
     width: 20vw;
-    background-color: var(--color-palette-light-yellow);
+    background-color: var(--color-palette-light-green);
+    transition: all 0.3s ease;
 }
+
+.sidebarBox.collapsed {
+    width: 5vw;
+    transition: all 0.3s ease;
+}
+
+.sidebarEinklappen {
+    background-color: var(--color-palette-light-green);
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    right: 1vw;
+    top: 1vh;
+    transition: transform 0.3s ease;
+}
+
+.sidebarBox.collapsed .sidebarEinklappen {
+    transform: rotate(180deg);
+}
+
 .sidebarLinkBox {
     display: flex;
     flex-direction: column;
-    row-gap: 10vh;
+    justify-content: space-evenly;
     position: absolute;
-    top: 3vh;
+    top: 8vh;
     left: 50%;
     transform: translateX(-50%);
     height: 75vh;
     width: 18vw;
-    background-color: var(--color-palette-cream);
+    background-color: var(--color-palette-light-green);
+    border-radius: 5px;
+    transition: all 0.3s ease;
 }
+
+.sidebarBox.collapsed .sidebarLinkBox,
+.sidebarBox.collapsed .sidebarProfileBox {
+    width: 4vw;
+}
+
+.sidebarLinks:hover > .sidebarLink {
+    font-size: 32px;
+}
+
 .sidebarLink {
+    margin-left: 2.5vw;
     text-decoration: none;
     color: black;
+    font-family: var(--font-primary);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    transition: all 0.3s ease;
+    white-space: nowrap;
 }
+
+.sidebarBox.collapsed .sidebarLink span,
+.sidebarBox.collapsed .profileText {
+    display: none;
+}
+
+.sidebarBox.collapsed .sidebarLink {
+    font-size: 0;
+    gap: 0;
+    margin-left: 1vw;
+}
+
+.sidebarBox.collapsed .sidebarLink svg {
+    width: 32px;
+    height: 32px;
+}
+
 .sidebarProfileBox {
     position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     bottom: 3vh;
     left: 50%;
     transform: translateX(-50%);
     height: 10vh;
     width: 18vw;
-    background-color: var(--color-palette-cream);
+    background-color: var(--color-palette-light-green);
+    border-radius: 5px;
+    transition: all 0.3s ease;
+    z-index: 1001;
+}
+
+.sidebarBox.collapsed .sidebarProfileBox {
+    width: 4vw;
+    flex-direction: column;
+    gap: 1vh;
+}
+
+.profileButton {
+    width: 10vw;
+    margin: 2vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-palette-light-green);
+    border: none;
+    cursor: pointer;
+}
+
+.sidebarBox.collapsed .profileButton {
+    width: 4vw;
+    margin: 0;
+}
+
+.settingsButton {
+    width: 4vw;
+    margin: 2vh;
+    background-color: var(--color-palette-light-green);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.sidebarBox.collapsed .settingsButton {
+    width: 100%;
+    margin: 0;
+}
+
+.settingsButton:hover > .settingsWheel {
+    transform: rotateZ(360deg);
+}
+
+.settingsWheel {
+    transition: transform 1s;
+    z-index: 1001;
+}
+
+.profileText {
+    text-decoration: none;
+    color: black;
+    font-family: var(--font-primary);
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+    transition: font-size 100ms;
+}
+
+.sidebarBox.collapsed .profileText {
+    display: none;
+}
+
+.profileButton:hover .profileText {
+    font-size: 32px;
+}
+
+.profileButton {
+    justify-content: center;
+}
+
+.sidebarBox.collapsed .profileButton svg,
+.sidebarBox.collapsed .settingsWheel {
+    width: 32px;
+    height: 32px;
+}
+
+.settingsbox {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2vh;
+    top: 0;
+    left: 0;
+    width: 20vw;
+    height: 100vh;
+    background-color: var(--color-palette-light-green);
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+}
+
+.settingsbox.visible {
+    transform: translateX(0);
+}
+
+.settingsbox h3 {
+    font-family: var(--font-primary);
+    font-size: 30px;
+    text-align: center;
+    margin-top: 2vh;
+}
+
+.settingsbox p {
+    font-family: var(--font-primary);
+    font-size: 20px;
+    text-align: center;
+    margin-top: 2vh;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 28px;
+}
+
+.toggle-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-label {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.toggle-label:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+.toggle-input:checked + .toggle-label {
+    background-color: #028090;
+}
+
+.toggle-input:checked + .toggle-label:before {
+    transform: translateX(32px);
+}
+
+/* Neue Klasse für farbigen Hintergrund */
+.colored-bg {
+    background-color: #222831 !important;
+    color: #fff !important;
+}
+
+.colored-bg svg {
+    stroke: #fff !important;
 }

@@ -21,6 +21,14 @@
   --font-secondary-wide: "PolySansTrial Wide", sans-serif;
 }
 
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: var(--color-palette-dark-gray);
+  font-family: "Ubuntu", sans-serif;
+}
+
 /* ── PolySansTrial (proportional) ── */
 @font-face {
   font-family: "PolySansTrial";
@@ -190,8 +198,4 @@
   src: url("/assets/fonts/polysansitalictrial-bulkywideitalic.otf") format("opentype");
   font-weight: 800;
   font-style: italic;
-}
-* {
-  margin: 0;
-  padding: 0;
 }
