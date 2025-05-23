@@ -1,4 +1,3 @@
-
 .container {
     background-color: var(--color-palette-white);
     border-radius: 10px;
@@ -7,9 +6,12 @@
     color: var(--color-palette-dark-gray);
     display: flex;
     flex-direction: column;
-    /* Remove padding here, it will be added to .post-content */
-    overflow: hidden; /* Ensures image corners are rounded with container */
-    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Combine transitions */
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;      /* Feste Breite für Gleichheit */
+    height: 100%;      /* Höhe an Eltern anpassen */
+    min-height: unset; /* Entfernen */
+    max-height: unset; /* Entfernen */
 }
 
 .container:hover {
@@ -40,9 +42,11 @@
 /* --- Content Area Styling --- */
 .post-content {
     padding: 15px 20px; /* Padding for the text content */
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
     gap: 12px; /* Space between content sections */
+    /* Entferne overflow, falls gesetzt */
 }
 
 /* --- Header (Date & Title) Styling --- */
@@ -75,6 +79,7 @@
     display: flex;
     flex-wrap: wrap; /* Allow tags/location to wrap if too long */
     gap: 8px; /* Space between meta items */
+    margin-bottom: 32px; /* Weißer Platz zwischen Meta und Status */
 }
 .post-location{
     display: inline-flex;
@@ -204,4 +209,10 @@
     transform: translateY(-2px); /* Slight lift effect */
 }.joinButton:active {
     transform: translateY(0); /* Press effect */
+}
+.posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+    align-items: stretch; /* Alle Kinder gleich hoch */
 }
