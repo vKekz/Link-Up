@@ -44,15 +44,15 @@ export class PostController extends ApiController {
    * Lädt Posts mit Geokoordinaten innerhalb eines bestimmten Bereichs
    * @param longitude Längengrad des Zentrums
    * @param latitude Breitengrad des Zentrums
-   * @param radiusKm Radius in Kilometern (optional, Standard: 50)
+   * @param radius_meters Radius in Metern (optional, Standard: 50)
    */
-  public async loadPostsByLocation(longitude: number, latitude: number, radiusKm: number = 50): Promise<PostResponse[]> {
+  public async loadPostsByLocation(longitude: number, latitude: number, radius_meters: number = 500): Promise<PostResponse[]> {
     // PostgreSQL-Funktion ST_DWithin, um Posts innerhalb eines bestimmten Radius zu finden
     // Benötigt PostGIS-Erweiterung in Supabase
     const { data, error } = await this.supabaseClient.rpc('find_posts_within_distance', {
       center_lon: longitude,
       center_lat: latitude,
-      radius_km: radiusKm
+      radius_meters: radius_meters,
     });
     
     if (error) {

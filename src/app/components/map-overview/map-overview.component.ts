@@ -462,9 +462,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
    * Lädt Posts aus Supabase basierend auf Standort und zeigt sie als Marker an
    * @param longitude Längengrad
    * @param latitude Breitengrad
-   * @param radiusKm Radius in Kilometern (optional)
+   * @param radiusMeters Radius in Metern (optional)
    */
-  public async loadPostsNearLocation(longitude: number, latitude: number, radiusKm: number = 50): Promise<void> {
+  public async loadPostsNearLocation(longitude: number, latitude: number, radiusMeters: number = 50): Promise<void> {
     if (!this.map) return;
     
     try {
@@ -472,7 +472,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.showLoadingAnimation("Lade Posts...");
       
       // Posts in der Nähe laden
-      const posts = await this.supabaseService.getPostController().loadPostsByLocation(longitude, latitude, radiusKm);
+      const posts = await this.supabaseService.getPostController().loadPostsByLocation(longitude, latitude, radiusMeters);
       
       console.log(`${posts.length} Posts in der Nähe gefunden.`);
       
