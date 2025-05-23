@@ -43,6 +43,8 @@ export class PostsFormComponent implements OnInit, OnDestroy {
   private searchTerms = new Subject<string>();
   private destroy$ = new Subject<void>();
 
+  selectedPost: any = null;
+
   constructor(
     private readonly subabaseService: SupabaseService,
     private readonly http: HttpClient
@@ -206,4 +208,23 @@ export class PostsFormComponent implements OnInit, OnDestroy {
 
     this.addressSuggestions = []; // Vorschläge ausblenden
   }
+
+  showPostDetail(post: any) {
+    this.selectedPost = post;
+  }
+
+  closePostDetail() {
+    this.selectedPost = null;
+  }
+  protected async joinPost() {
+    const postId = this.selectedPost?.id;
+    if (!postId) {
+      return;
+    }
+
+    await this.subabaseService.getPostController().joinPostChat(postId);
+    // this.hasJoinedChat.set(true);
+  }
 }
+
+

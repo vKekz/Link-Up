@@ -1,11 +1,12 @@
 <div class="page-wrapper">
-  <div class="post-grid">
-    @for (post of this.getPosts(); track post.id) {
-      <app-post [post]="post"></app-post>
-    }
-  </div>
-
-  <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
+  @if (!this.selectedPost) {
+    <div class="post-grid">
+      @for (post of this.getPosts(); track post.id) {
+        <app-post [post]="post" (click)="this.showPostDetail(post)"></app-post>
+      }
+    </div>
+    <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
+  }
 
   @if (this.shouldShowCreationForm) {
     <div class="modal-overlay" (click)="this.toggleForm()"></div>
@@ -99,12 +100,53 @@
         <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description" />
 
         <div class="checkbox-group">
-          <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join" #openToJoinInput/>
+          <input
+            [(ngModel)]="newPost.open_to_join"
+            type="checkbox"
+            id="postOpenToJoin"
+            name="open_to_join"
+            #openToJoinInput
+          />
           <label for="postOpenToJoin">Öffentlich beitretbar</label>
         </div>
 
         <button class="createButton" (click)="this.createPost()">Post erstellen</button>
       </form>
+    </div>
+  }
+
+  @if (this.selectedPost) {
+    <div class="post-detail large-view">
+      <button class="back-button" (click)="this.closePostDetail()">← Zurück zur Übersicht</button>
+      <h2>{{ selectedPost.title }}</h2>
+      <div class="post-content">
+        <div class="post-info">
+          <p>
+            <span class="emoji">📅</span>
+            <span><strong>Datum:</strong> {{ selectedPost.date | date: "dd.MM.yyyy" }}</span>
+          </p>
+          <p>
+            <span class="emoji">📍</span>
+            <span><strong>Ort:</strong> {{ selectedPost.location }}</span>
+          </p>
+          <p class="post-description">
+            <span class="emoji">📝</span>
+            <span>{{ selectedPost.description }}</span>
+          </p>
+          <div class="post-tags">
+            @for (tag of selectedPost.tags; track tag) {
+              <span class="tag">{{ tag }}</span>
+            }
+          </div>
+        </div>
+        <div class="post-actions">
+          @if (selectedPost.open_to_join) {
+            <button class="join-button" (click)="joinPost(selectedPost)">
+              <span class="emoji">🤝</span> Teilnehmen
+            </button>
+          }
+        </div>
+      </div>
     </div>
   }
 </div>
