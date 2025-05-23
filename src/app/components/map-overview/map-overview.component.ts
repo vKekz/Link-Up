@@ -27,18 +27,20 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     // { lat: 40.7128, lng: -74.006, title: "New York", description: "The Big Apple" },
   ]);
   private locationMarker: L.LayerGroup | null = null;
-  
-  
+
+
   // Service injizieren
   private supabaseService = inject(SupabaseService);
-  
-  
-  
+
+
+
   // Status-Variablen für die Standortverfolgung
   private isLocating = false;
   private locationErrorCount = 0;
   private maxLocationErrors = 3;
   private lastLocationFound = false;
+
+  private radius = signal(5000);
 
   @Output() markerClicked = new EventEmitter<string>();
 
@@ -57,12 +59,12 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.resizeMap();
     });
   }
-  
+
   ngOnDestroy(): void {
     console.log("NG on destroy");
     // Event-Listener für Fenstergröße entfernen
     window.removeEventListener('resize', this.resizeMap);
-    
+
     if (this.map) {
       // Standortverfolgung stoppen
       this.map.stopLocate();
@@ -73,17 +75,18 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
 
   private locationControlInstance?: L.Control;
   private postsControlInstance?: L.Control;
-
+  private radiusControlInstance?: L.Control;
+  private radiusCircle?: L.Circle;
   private initMap(): void {
     if (this.map) {
       return;
     }
-    
+
     this.map = L.map("map", {
-      center: [51.505, -0.09],
-      zoom: 5,
+      center: [49.47457750584654, 8.534245487974458],
+      zoom: 12,
     });
-    
+
     // Wichtig: Karte invalidieren, damit sie sich an das Container-Element anpasst
     setTimeout(() => {
       if (this.map) {
@@ -104,9 +107,10 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     this.map.options.minZoom = 5;
     // this.map.options.maxZoom = 10;
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      maxZoom: 19,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
+      minZoom: 0,
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.map);
 
     // Standort lokalisieren und blauen Punkt anzeigen
@@ -129,21 +133,39 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.postsControlInstance = undefined;
     }
 
-    // Standort-Button
-    const LocationControl = L.Control.extend({
+    if (this.radiusControlInstance) {
+      this.map.removeControl(this.radiusControlInstance);
+      this.radiusControlInstance = undefined;
+    }
+
+    const RadiusControl = L.Control.extend({
       options: { position: 'bottomright' },
       onAdd: () => {
-        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control location-button');
-        container.innerHTML = '<a href="#" title="Zeige meinen Standort"><span class="location-icon">📍</span></a>';
-        container.onclick = () => {
-          this.locateUser();
-          return false;
-        };
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control radius-button');
+        container.innerHTML = `
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 10px; background-color: white; border-radius: 5px; border: 1px solid #ccc; min-width: 200px;">
+            <input id="radius-slider" type="range" min="500" max="30000" value="5000" step="500" style="width: 180px;" />
+            <div style="display: flex; justify-content: space-between; width: 180px; font-size: 10px; color: #666;">
+              <span>500m</span>
+              <span>5km</span>
+              <span>15km</span>
+              <span>30km</span>
+            </div>
+            <div id="radius-value" style="font-size: 12px; font-weight: bold; color: #333;">5.0km</div>
+          </div>
+        `;
+
+        // Prevent map dragging when interacting with the slider
+        L.DomEvent.disableClickPropagation(container);
+        L.DomEvent.disableScrollPropagation(container);
+
         return container;
-      }
+      },
     });
-    this.locationControlInstance = new LocationControl();
-    this.map.addControl(this.locationControlInstance);
+
+    this.radiusControlInstance = new RadiusControl();
+
+    this.map.addControl(this.radiusControlInstance);
 
     // Posts-Button
     const PostsControl = L.Control.extend({
@@ -163,6 +185,84 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     });
     this.postsControlInstance = new PostsControl();
     this.map.addControl(this.postsControlInstance);
+
+
+
+    document.getElementById('radius-slider')?.addEventListener('input', (e: Event) => {
+      const slider = e.target as HTMLInputElement;
+      const value = parseInt(slider.value);
+
+      // Update the display value
+      const displayElement = document.getElementById('radius-value');
+      if (displayElement) {
+        if (value >= 1000) {
+          displayElement.textContent = `${(value / 1000).toFixed(1)}km`;
+        } else {
+          displayElement.textContent = `${value}m`;
+        }
+      }
+
+      // Update radius circle
+      if (this.radiusCircle) {
+        this.radiusCircle.setRadius(value);
+      }
+
+      // Calculate and set appropriate zoom level based on radius
+      const zoomLevel = this.calculateZoomFromRadius(value);
+      if (this.map) {
+        this.map.setZoom(zoomLevel);
+      }
+
+      console.log('Radius changed to:', value, 'Zoom level:', zoomLevel);
+    });
+
+    // Prevent map dragging when interacting with the slider
+    const sliderElement = document.getElementById('radius-slider');
+    if (sliderElement) {
+      // Prevent map dragging during slider interactions
+      sliderElement.addEventListener('mousedown', (e: Event) => {
+        e.stopPropagation();
+      });
+
+      sliderElement.addEventListener('touchstart', (e: Event) => {
+        e.stopPropagation();
+      });
+
+      sliderElement.addEventListener('mousemove', (e: Event) => {
+        e.stopPropagation();
+      });
+
+      sliderElement.addEventListener('touchmove', (e: Event) => {
+        e.stopPropagation();
+      });
+
+      sliderElement.addEventListener('mouseup', (e: Event) => {
+        e.stopPropagation();
+      });
+
+      sliderElement.addEventListener('touchend', (e: Event) => {
+        e.stopPropagation();
+      });
+    }
+
+    // Standort-Button
+    const LocationControl = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd: () => {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control location-button');
+        container.innerHTML = '<a href="#" title="Zeige meinen Standort"><span class="location-icon">📍</span></a>';
+        container.onclick = () => {
+          console.log('Locating user location')
+          this.locateUser();
+          return false;
+        };
+        return container;
+      }
+    });
+    this.locationControlInstance = new LocationControl();
+    this.map.addControl(this.locationControlInstance);
+
+
   }
 
   private addMarkers(): void {
@@ -267,11 +367,11 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.map?.flyTo([marker.lat, marker.lng], 10);
     }
   }
-  
+
   public getMarkers(): Marker[] {
     return this.markersData();
   }
-  
+
   // Benutzerstandort lokalisieren und anzeigen
   private locateUser(): void {
     if (!this.map) return;
@@ -291,9 +391,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
 
     // Standortverfolgung starten mit verbesserten Optionen
     this.isLocating = true;
-    this.map.locate({ 
-      setView: true, 
-      maxZoom: 16, 
+    this.map.locate({
+      setView: true,
+      maxZoom: 14,
       watch: true,              // Kontinuierliche Aktualisierung
       enableHighAccuracy: true, // Hochpräzise Standortbestimmung aktivieren
       timeout: 10000,           // Mittlerer Timeout (10 Sekunden) pro Versuch
@@ -306,9 +406,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.hideLocatingAnimation();
       this.lastLocationFound = true;
       this.locationErrorCount = 0;
-      
+
       console.log('Standort gefunden:', e.latlng, 'Genauigkeit:', e.accuracy);
-      
+
       // Entferne den bestehenden Standortmarker, falls vorhanden
       if (this.locationMarker) {
         this.map?.removeLayer(this.locationMarker);
@@ -317,22 +417,24 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
 
       // Radius für die Genauigkeit (accuracy) - mit sinnvoller Obergrenze
       const radius = Math.min(e.accuracy, 500); // Begrenze den Radius auf 500 Meter
-      
+
       // LayerGroup für beide Kreise erstellen
       const locGroup = L.layerGroup();
-      
+
       // Äußerer, transparenter Genauigkeitskreis
-      L.circle(e.latlng, {
-        radius: radius,
+      const circle = L.circle(e.latlng, {
+        radius: this.radius(),
         color: 'var(--color-palette-light-teal)',
         fillColor: 'var(--color-palette-light-teal)',
         fillOpacity: 0.15,
         weight: 1
       }).addTo(locGroup);
-      
+
+      this.radiusCircle = circle;
+
       // Pulsierende Animation für den inneren Standortkreis
       const innerRadius = Math.min(radius * 0.15, 15); // Kleinerer Kreis, max 15 Meter
-      
+
       // Innerer, dunklerer Standortkreis
       const innerCircle = L.circle(e.latlng, {
         radius: innerRadius,
@@ -342,36 +444,36 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         weight: 2,
         className: 'location-marker-inner' // Klasse für CSS-Animation
       }).addTo(locGroup);
-      
+
       // LayerGroup zur Karte hinzufügen und als locationMarker speichern
       locGroup.addTo(this.map!);
       this.locationMarker = locGroup;
-      
+
       // // Update der Location Button-Anzeige, um zu zeigen, dass Standort aktiv ist
       // this.updateLocationButtonState(true);
     });
-    
+
     // Event-Handler für Fehler bei der Standortbestimmung
     this.map.on('locationerror', (e: L.ErrorEvent) => {
       this.locationErrorCount++;
-      
+
       console.error(`Standortbestimmung fehlgeschlagen (${this.locationErrorCount}/${this.maxLocationErrors}):`, e.message);
-      
+
       // Nur wenn wir noch keinen Standort hatten oder nach mehreren Fehlern zeigen wir eine Meldung an
       if (!this.lastLocationFound || this.locationErrorCount >= this.maxLocationErrors) {
         // Entferne Lade-Animation
         this.hideLocatingAnimation();
-        
+
         // Visuelle Rückmeldung auf der Karte
         this.showLocationErrorMessage();
-        
+
         // Bei mehrfachen Fehlern: Stoppe die Standortverfolgung kurz und versuche es dann erneut
         if (this.isLocating) {
           if (this.map) {
             this.map.stopLocate();
           }
           this.isLocating = false;
-          
+
           // Versuche es nach einer Pause erneut
           setTimeout(() => {
             if (this.locationErrorCount >= this.maxLocationErrors) {
@@ -380,21 +482,21 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
             this.locateUser();
           }, 5000); // Kürzere Wartezeit für bessere Benutzererfahrung
         }
-        
+
         // // Update der Location Button-Anzeige
         // this.updateLocationButtonState(false);
       }
     });
   }
-  
+
   // Hilfsmethode: Zeigt eine Ladeanimation für die Standortsuche an
   private showLocatingAnimation(): void {
     const container = L.DomUtil.get('map');
     if (!container) return;
-    
+
     // Entferne vorhandene Animation falls vorhanden
     this.hideLocatingAnimation();
-    
+
     // Erstelle das Lade-Element
     const loadingElement = L.DomUtil.create('div', 'location-loading-animation');
     loadingElement.id = 'locationLoadingAnimation';
@@ -404,10 +506,10 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         <p>Suche Standort...</p>
       </div>
     `;
-    
+
     container.appendChild(loadingElement);
   }
-  
+
   // Hilfsmethode: Entfernt die Ladeanimation
   private hideLocatingAnimation(): void {
     const container = L.DomUtil.get('map');
@@ -416,18 +518,18 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       container.removeChild(loadingElement);
     }
   }
-  
+
   // Hilfsmethode: Zeigt eine Fehlermeldung bei Standortproblemen an
   private showLocationErrorMessage(): void {
     const container = L.DomUtil.get('map');
     if (!container) return;
-    
+
     // Entferne vorhandene Fehlermeldung falls vorhanden
     const existingError = document.getElementById('locationErrorMessage');
     if (existingError && container.contains(existingError)) {
       container.removeChild(existingError);
     }
-    
+
     // Erstelle die Fehlermeldung
     const errorMsg = L.DomUtil.create('div', 'location-error-message');
     errorMsg.id = 'locationErrorMessage';
@@ -437,9 +539,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         <p>Bitte überprüfe, ob die Standortdienste aktiviert sind und du der Anwendung Zugriff erlaubt hast.</p>
       </div>
     `;
-    
+
     container.appendChild(errorMsg);
-    
+
     // Entferne die Nachricht nach 5 Sekunden
     setTimeout(() => {
       if (container.contains(errorMsg)) {
@@ -447,7 +549,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       }
     }, 5000);
   }
-  
+
   // Hilfsmethode: Aktualisiert den Zustand des Standort-Buttons
   private updateLocationButtonState(active: boolean): void {
     const locationButton = document.querySelector('.location-button a');
@@ -458,9 +560,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         locationButton.classList.remove('active');
       }
     }
-  
 
-  // Button zum Zentrieren auf Benutzerstandort  private addLocationButton(): void {
+
+    // Button zum Zentrieren auf Benutzerstandort  private addLocationButton(): void {
     if (!this.map) return;
 
     // Erstelle einen benutzerdefinierten Steuerungsbutton
@@ -472,29 +574,29 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       onAdd: () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control location-button');
         container.innerHTML = '<a href="#" title="Zeige meinen Standort"><span class="location-icon">📍</span></a>';
-        
+
         container.onclick = () => {
           this.locateUser();
           return false;
         };
-        
+
         return container;
       }
     });
 
     // Button zur Karte hinzufügen
     this.map.addControl(new locationControl());
-    
+
     // Button zum Laden von Posts in der Nähe hinzufügen
     const loadPostsControl = L.Control.extend({
       options: {
         position: 'bottomright'
       },
-      
+
       onAdd: () => {
         const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control posts-button');
         container.innerHTML = '<a href="#" title="Posts in der Umgebung laden"><span class="posts-icon">📋</span></a>';
-        
+
         container.onclick = () => {
           if (this.map) {
             const center = this.map.getCenter();
@@ -502,15 +604,15 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
           }
           return false;
         };
-        
+
         return container;
       }
     });
-    
+
     // Button zur Karte hinzufügen
     this.map.addControl(new loadPostsControl());
   }
-  
+
   /**
    * Lädt Posts aus Supabase basierend auf Standort und zeigt sie als Marker an
    * @param longitude Längengrad
@@ -524,25 +626,25 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     try {
       // Lade-Anzeige darstellen
       this.showLoadingAnimation("Lade Posts...");
-      
+
       // Posts in der Nähe laden
       const posts = await this.supabaseService.getPostController().loadPostsByLocation(longitude, latitude, radiusMeters);
-      
+
       console.log(`${posts.length} Posts in der Nähe gefunden.`);
-      
+
       // Bestehende Post-Marker entfernen
       this.clearPostMarkers();
-      
+
       // Neue Marker für jeden Post hinzufügen
       posts.forEach(post => this.addPostMarker(post));
-      
+
       // Lade-Anzeige entfernen
       this.hideLoadingAnimation();
-      
+
     } catch (error) {
       console.error("Fehler beim Laden der Posts:", error);
       this.hideLoadingAnimation();
-      
+
       // Visuelle Fehlermeldung anzeigen
       if (this.map) {
         const errorMsg = L.DomUtil.create('div', 'location-error-message');
@@ -553,11 +655,11 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
             <p>Die Posts konnten nicht geladen werden. Bitte versuchen Sie es später erneut.</p>
           </div>
         `;
-        
+
         const container = L.DomUtil.get('map');
         if (container) {
           container.appendChild(errorMsg);
-          
+
           // Nach 5 Sekunden ausblenden
           setTimeout(() => {
             if (container.contains(errorMsg)) {
@@ -568,16 +670,16 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       }
     }
   }
-  
+
   /**
    * Fügt einen Marker für einen Post hinzu
    * @param post Der Post mit Geokoordinaten
    */
   private addPostMarker(post: PostResponse): void {
     if (!this.map) return;
-    
-    
-    
+
+
+
     // Marker-Icon anpassen
     const postIcon = L.icon({
       iconUrl: "assets/marker-icon-2x.png", // Stelle sicher, dass diese Datei existiert oder nutze ein Standard-Icon
@@ -587,17 +689,17 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       shadowUrl: "assets/marker-shadow.png",
       shadowSize: [41, 41],
     });
-    
+
     // Fallback auf Standard-Icon
     const icon = postIcon.options.iconUrl ? postIcon : new L.Icon.Default();
     const latitude = post.latitude || 0;
     const longitude = post.longitude || 0;
     // Marker erstellen und zur Karte hinzufügen
     const marker = L.marker(
-      [latitude, longitude], 
+      [latitude, longitude],
       { icon: icon }
     ).addTo(this.map);
-    
+
     // Popup mit Informationen erstellen
     marker.bindPopup(`
       <div class="marker-popup post-marker">
@@ -611,13 +713,13 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         </button>
       </div>
     `);
-    
+
     // Event-Handler für das Popup
     marker.on("popupopen", () => {
       setTimeout(() => {
         const popupContent = marker.getPopup()?.getElement();
         const detailButton = popupContent?.querySelector(".btn-details");
-        
+
         if (detailButton) {
           detailButton.addEventListener(
             "click",
@@ -629,7 +731,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
                 console.log(`Post-Details angefordert für ID: ${postId}`);
                 // TODO navigate to Posts detail Page
                 // this.router.navigate(['/posts', postId]);
-                
+
               }
             },
             { once: true }
@@ -637,19 +739,19 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         }
       }, 0);
     });
-    
+
     // Marker in markersData speichern
     const updatedMarkers = [...this.markersData(), { lat: latitude, lng: longitude, title: post.title, description: post.description || '' }];
     this.markersData.set(updatedMarkers);
 
   }
-  
+
   /**
    * Entfernt alle Post-Marker von der Karte
    */
   private clearPostMarkers(): void {
     if (!this.map) return;
-    
+
     // Alle Marker entfernen
     // this.postMarkers.forEach(marker => {
     //   this.map?.removeLayer(marker);
@@ -662,22 +764,22 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       }
     }
     );
-    
+
     // Array zurücksetzen
     // this.postMarkers = [];
 
   }
-  
+
   /**
    * Zeigt eine Ladeanimation für das Laden von Posts an
    */
   private showLoadingAnimation(message: string = "Lädt..."): void {
     const container = L.DomUtil.get('map');
     if (!container) return;
-    
+
     // Entferne vorhandene Animation falls vorhanden
     this.hideLoadingAnimation();
-    
+
     // Erstelle das Lade-Element
     const loadingElement = L.DomUtil.create('div', 'posts-loading-animation');
     loadingElement.id = 'postsLoadingAnimation';
@@ -687,10 +789,10 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         <p>${message}</p>
       </div>
     `;
-    
+
     container.appendChild(loadingElement);
   }
-  
+
   /**
    * Entfernt die Ladeanimation
    */
@@ -706,5 +808,24 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     if (this.map) {
       this.map.invalidateSize();
     }
+  }
+
+  /**
+   * Calculates appropriate zoom level based on radius value
+   * Smaller radius = higher zoom (more zoomed in)
+   * Larger radius = lower zoom (more zoomed out)
+   */
+  private calculateZoomFromRadius(radius: number): number {
+    // Define zoom mapping based on radius ranges
+    // Radius range: 500m to 30000m (30km)
+    // Zoom range: 16 (closest) to 8 (furthest)
+
+    if (radius <= 1000) return 16;        // 500m-1km: Very close zoom
+    if (radius <= 2000) return 15;        // 1-2km: Close zoom
+    if (radius <= 3000) return 14;        // 2-3km: Medium-close zoom
+    if (radius <= 5000) return 13;        // 3-5km: Medium zoom
+    if (radius <= 8000) return 12;        // 5-8km: Default zoom
+    if (radius <= 12000) return 11;       // 8-12km: Medium-far zoom
+    return 10;       // 12-18km: Far zoom
   }
 }
