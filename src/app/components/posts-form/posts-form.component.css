@@ -1,0 +1,480 @@
+/* filepath: c:\Users\yassi\Link-Up\src\app\components\posts-form\posts-form.component.css */
+body {
+  font-family: var(--font-primary);
+  margin: 0; /* Remove default body margin */
+  padding: 20px;
+  background-color: var(--color-palette-light-gray);
+  color: var(--color-palette-dark-gray);
+  display: flex; /* Use flexbox for centering */
+  justify-content: center;
+  align-items: flex-start; /* Align to top */
+  min-height: 100vh; /* Ensure it takes full viewport height */
+  box-sizing: border-box; /* Include padding in height calculation */
+}
+.container {
+  background-color: var(--color-palette-white);
+  padding: 25px 35px; /* Added horizontal padding */
+  border-radius: 10px; /* Slightly more rounded corners */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* Stronger, softer shadow */
+  max-width: 550px; /* Slightly wider */
+  width: 100%; /* Ensure it takes full width within max-width */
+  box-sizing: border-box;
+}
+
+h2 {
+  font-family: var(--font-secondary-wide); /* Use wide font for heading */
+  text-align: center;
+  color: var(--color-palette-dark-teal);
+  margin-bottom: 15px;
+  font-size: 1.7rem; /* Larger heading */
+}
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600; /* Bolder label */
+  color: var(--color-palette-dark-gray);
+  font-family: var(--font-secondary); /* Use secondary font for labels */
+  font-size: 0.95em;
+}
+
+input[type="text"],
+textarea,
+input[type="date"] {
+  width: 100%;
+  padding: 10px; /* More padding */
+  margin-bottom: 10px; /* More space below inputs */
+  border: 1px solid var(--color-palette-gray);
+  border-radius: 6px; /* Slightly more rounded input fields */
+  box-sizing: border-box;
+  font-size: 1em;
+  font-family: var(--font-primary); /* Primary font for input text */
+  color: var(--color-palette-dark-gray);
+  background-color: var(--color-palette-light-gray); /* Light background for inputs */
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* Styling für die Adresssuche */
+.location-search-container {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.address-suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--color-palette-gray);
+  border-radius: 4px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.suggestion-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f5f5f5;
+  color: var(--color-palette-teal);
+}
+
+.suggestion-item:focus {
+  background-color: #e9f5fb;
+  outline: none;
+}
+
+/* Animation für die ausgewählte Adresse */
+.with-suggestions {
+  border-color: var(--color-palette-teal) !important;
+  box-shadow: 0 0 0 1px rgba(0, 128, 128, 0.2) !important;
+}
+
+.hint-text {
+  display: block;
+  margin-top: 4px;
+  color: #6c757d;
+  font-style: italic;
+  font-size: 0.85rem;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid var(--color-palette-teal);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+  100% {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+/* Erfolgsmeldung für ausgewählte Adresse mit Geokoordinaten */
+.success-text {
+  display: flex;
+  align-items: center;
+  color: #28a745;
+  margin-top: 4px;
+  font-size: 0.85rem;
+}
+
+.success-text svg {
+  margin-right: 5px;
+}
+
+input[type="text"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-palette-light-teal); /* Highlight on focus */
+  box-shadow: 0 0 0 3px rgba(0, 168, 150, 0.2); /* Soft shadow on focus */
+  background-color: var(--color-palette-white);
+}
+textarea {
+  resize: vertical;
+  height: 80px;
+  min-height: 60px;
+  max-height: 95px;
+}
+.checkbox-group {
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+}
+.checkbox-group label {
+  margin-bottom: 0;
+  margin-left: 10px; /* More space from checkbox */
+  font-weight: 400; /* Regular weight for checkbox label */
+  font-family: var(--font-primary);
+}
+input[type="checkbox"] {
+  /* Styling for checkbox itself can be tricky and varies by browser */
+  /* A common approach is to hide default and use custom styling */
+  /* For simplicity, we'll just adjust scale here */
+  transform: scale(1.3); /* Slightly larger checkbox */
+  margin-right: 5px; /* Space between checkbox and label */
+  accent-color: var(--color-palette-light-teal); /* Modern way to color checkbox */
+}
+.createButton {
+  width: 100%;
+  padding: 11px; /* More padding for button */
+  background-color: var(--color-palette-teal); /* Teal button */
+  color: var(--color-palette-white);
+  border: none;
+  border-radius: 9px; /* More rounded button */
+  cursor: pointer;
+  font-size: 1em; /* Larger font size */
+  font-weight: 600; /* Bolder button text */
+  font-family: var(--font-secondary-wide); /* Wide font for button */
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
+}
+.createButton:hover {
+  background-color: var(--color-palette-dark-teal); /* Darker teal on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+.createButton:active {
+  transform: translateY(0); /* Press effect */
+}
+
+.page-wrapper {
+  position: relative;
+  z-index: 0;
+  padding: 90px;
+  overflow-y: scroll;
+  max-height: 70vh;
+}
+
+/* Grid layout for posts */
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.toggle-btn {
+  position: fixed;
+  top: 20px;
+  right: 150px;
+  z-index: 100;
+  padding: 12px 24px;
+  background-color: var(--color-palette-teal);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: var(--font-secondary-wide);
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition:
+    background-color 0.3s ease,
+    transform 0.1s ease;
+}
+
+.toggle-btn:hover {
+  background-color: var(--color-palette-dark-teal);
+  transform: translateY(-2px);
+}
+
+.toggle-btn:active {
+  transform: translateY(0);
+}
+
+/* Modal overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 99;
+}
+
+/* Modal form container */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: var(--color-palette-white);
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  z-index: 100;
+  max-width: 500px;
+  width: 90%;
+  box-sizing: border-box;
+  max-height: 90vh; /* Set a maximum height relative to viewport height */
+}
+
+/* Optional: fade-in animation */
+.modal,
+.modal-overlay {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Post Detail Styles */
+.post-detail {
+  max-width: 600px;
+  padding: 30px;
+}
+
+.post-content {
+  margin-top: 20px;
+}
+
+.post-info p {
+  margin: 10px 0;
+  line-height: 1.5;
+}
+
+.post-tags {
+  margin: 15px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag {
+  background-color: var(--color-palette-light-teal);
+  color: white;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 0.9em;
+}
+
+.post-actions {
+  margin-top: 25px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.join-button, .close-button {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-secondary);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.join-button {
+  background-color: var(--color-palette-teal);
+  color: white;
+}
+
+.join-button:hover {
+  background-color: var(--color-palette-dark-teal);
+}
+
+.close-button {
+  background-color: var(--color-palette-light-gray);
+  color: var(--color-palette-dark-gray);
+}
+
+.close-button:hover {
+  background-color: var(--color-palette-gray);
+}
+
+/* Verbesserte Post Detail Styles */
+.large-view {
+  background-color: var(--color-palette-white);
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  margin: 20px auto;
+  max-width: 800px;
+  width: 100%;
+}
+
+.back-button {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: var(--color-palette-teal);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-secondary-wide);
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: all 0.2s ease;
+}
+
+.back-button:hover {
+  background-color: var(--color-palette-dark-teal);
+  transform: translateX(-5px);
+}
+
+.large-view h2 {
+  color: var(--color-palette-dark-teal);
+  font-size: 2.2rem;
+  margin: 20px 0;
+}
+
+.post-info {
+  background-color: var(--color-palette-light-gray);
+  border-radius: 12px;
+  padding: 25px;
+  margin: 20px 0;
+}
+
+.post-info p {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.1rem;
+  margin: 15px 0;
+}
+
+.post-info .emoji {
+  font-size: 1.3rem;
+  min-width: 24px;
+}
+
+.post-description {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--color-palette-dark-gray);
+  margin: 20px 0;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.post-tags {
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: var(--color-palette-light-teal);
+  color: white;
+  padding: 6px 15px;
+  border-radius: 20px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.tag:hover {
+  transform: scale(1.05);
+}
+
+.post-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+}
+
+.join-button {
+  background-color: var(--color-palette-teal);
+  color: white;
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-family: var(--font-secondary-wide);
+  font-weight: 600;
+  font-size: 1.1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.join-button:hover {
+  background-color: var(--color-palette-dark-teal);
+  transform: translateY(-2px);
+}

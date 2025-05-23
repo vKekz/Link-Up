@@ -101,6 +101,21 @@ export class UserController extends ApiController {
     return { userName: data.user_name } as UsernameResponse;
   }
 
+  public async getProfileById(userId: string) {
+    const response = await this.supabaseClient.from("profiles").select().eq("user_id", userId);
+    const foundProfile = response.data?.at(0);
+    if (!foundProfile) {
+      return null;
+    }
+
+    const profileImageUrl = await this.getProfileImageUrl(userId);
+    return {
+      user_id: foundProfile.user_id,
+      user_name: foundProfile.user_name,
+      profileImageUrl: profileImageUrl,
+    } as ProfileResponse;
+  }
+
   public async uploadProfileImage(file: File) {
     const userId = this.profileDetails()?.user_id;
     if (!userId) {
@@ -109,12 +124,12 @@ export class UserController extends ApiController {
 
     const hasAvatar = this.profileDetails()?.profileImageUrl !== null;
     if (hasAvatar) {
-      await this.supabaseClient.storage.from("profile-avatars.storage").update(`${userId}/avatar.png`, file);
+      await this.supabaseClient.storage.from("profile-avatars.storage").update(`${userId}/avatar.jpg`, file);
     } else {
-      await this.supabaseClient.storage.from("profile-avatars.storage").upload(`${userId}/avatar.png`, file);
+      await this.supabaseClient.storage.from("profile-avatars.storage").upload(`${userId}/avatar.jpg`, file);
     }
 
-    const base64 = await this.imageToBase64(file);
+    const base64 = await this.getProfileImageUrl(userId);
     this.profileDetails.update((response) => {
       return {
         ...response,
@@ -123,15 +138,9 @@ export class UserController extends ApiController {
     });
   }
 
-  public async getProfileImageBase64(userId: string) {
-    const response = await this.supabaseClient.storage.from("profile-avatars.storage").download(`${userId}/avatar.png`);
-    const file = response.data;
-
-    if (!file) {
-      return null;
-    }
-
-    return this.imageToBase64(file);
+  public async getProfileImageUrl(userId: string) {
+    const response = this.supabaseClient.storage.from("profile-avatars.storage").getPublicUrl(`${userId}/avatar.jpg`);
+    return response.data.publicUrl;
   }
 
   public async isLoggedIn() {
@@ -145,15 +154,7 @@ export class UserController extends ApiController {
       return null;
     }
 
-    const response = await this.supabaseClient.from("profiles").select().eq("user_id", user.data.user?.id);
-    const foundProfile = response.data?.at(0);
-    const profileImageBase64 = await this.getProfileImageBase64(user.data.user.id);
-
-    return {
-      user_id: foundProfile.user_id,
-      user_name: foundProfile.user_name,
-      profileImageUrl: profileImageBase64,
-    } as ProfileResponse;
+    return await this.getProfileById(user.data.user.id);
   }
 
   private async createProfile(response: AuthResponse, name: string) {
@@ -167,11 +168,5 @@ export class UserController extends ApiController {
       user_name: name,
     };
     await this.supabaseClient.from("profiles").insert(profileRequest);
-  }
-
-  private async imageToBase64(file: Blob) {
-    const arrayBuffer = await file.arrayBuffer();
-    const base64 = btoa(new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ""));
-    return `data:image/png;base64, ${base64}`;
   }
 }
