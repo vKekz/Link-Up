@@ -10,6 +10,7 @@ import { AuthGuard } from "../guards/auth-guard.service";
 import { SessionGuard } from "../guards/session.guard";
 import { ROUTE_DASHBOARD, ROUTE_HOME, ROUTE_LOGIN, ROUTE_REGISTER, ROUTE_SETTINGS } from "../constants/route.constants";
 import { UserSettingsComponent } from "./components/user-settings/user-settings.component";
+import { RadiusSliderComponent } from "./components/radius-slider/radius-slider.component";
 
 export const routes: Routes = [
   { path: ROUTE_HOME, component: LandingPageComponent, pathMatch: "full" },
@@ -20,4 +21,5 @@ export const routes: Routes = [
   { path: "menu", component: MenuButtonComponent, pathMatch: "full" },
   { path: "sidebar", component: SidebarComponent, pathMatch: "full" },
   { path: "map", component: MapOverviewComponent, pathMatch: "full" },
+  { path: "radius-slider", component: RadiusSliderComponent, pathMatch: "full" },
 ];

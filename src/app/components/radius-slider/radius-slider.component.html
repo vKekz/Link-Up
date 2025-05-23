@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+<div class="slider-wrapper">
+  <div class="slider-container">
+    <div class="km-display">
+      {{currentValue}} km
+    </div>
+    <div class="slider-track-container">
+      <input 
+        type="range" 
+        id="kmSlider" 
+        [(ngModel)]="currentValue"
+        min="5" 
+        max="30" 
+        step="1"
+        (input)="onSliderInput($event)">
+      <div class="slider-ticks">
+        <span class="tick">5</span>
+        <span class="tick">10</span>
+        <span class="tick">15</span>
+        <span class="tick">20</span>
+        <span class="tick">25</span>
+        <span class="tick">30</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="circle"></div>
+
+<script>
+  const snapPoints = [5, 10, 15, 20, 25, 30];
+  const slider = document.getElementById('kmSlider');
+  const valueDisplay = document.getElementById('kmValue');
+  const circle = document.getElementById('circle');
+
+  function findClosestSnap(value) {
+    return snapPoints.reduce((prev, curr) =>
+      Math.abs(curr - value) < Math.abs(prev - value) ? curr : prev
+    );
+  }
+
+  function updateCircle(radius) {
+    valueDisplay.textContent = radius;
+    circle.style.width = radius + 'px';
+    circle.style.height = radius + 'px';
+    circle.style.borderRadius = radius / 2 + 'px';
+  }
+
+  // Vorschau beim Schieben
+  slider.addEventListener('input', () => {
+    updateCircle(slider.value);
+  });
+
+  // Snap beim Loslassen (Maus)
+  slider.addEventListener('mouseup', () => {
+    const snapped = findClosestSnap(parseInt(slider.value));
+    slider.value = snapped;
+    updateCircle(snapped);
+  });
+
+  // Snap beim Loslassen (Touch)
+  slider.addEventListener('touchend', () => {
+    const snapped = findClosestSnap(parseInt(slider.value));
+    slider.value = snapped;
+    updateCircle(snapped);
+  });
+
+  // Initiale Anzeige
+  updateCircle(slider.value);
+</script>
+
+</body>
+</html>
