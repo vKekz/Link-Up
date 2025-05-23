@@ -1,1 +1,41 @@
-﻿<p>user-login-form works!</p>
+﻿﻿<div class="container">
+  <div class="title">LinkUp - Anmelden</div>
+  <div class="sub-container">
+    <div class="input">
+      <label for="email">E-Mail</label>
+      <input
+        (keyup)="handleMailInput($event)"
+        [class]="!this.email && this.hasTriedSubmit ? 'required' : ''"
+        name="email"
+        id="email"
+        type="email"
+        placeholder="Deine E-Mail"
+      />
+    </div>
+    <div class="input">
+      <label for="password">Passwort</label>
+      <div class="password-container">
+        <input
+          (keyup)="handlePasswordInput($event)"
+          [class]="!this.password && this.hasTriedSubmit ? 'required' : ''"
+          name="password"
+          id="password"
+          type="password"
+          placeholder="Dein Passwort"
+          #passwordInput
+        />
+        <i
+          (click)="this.togglePasswordVisibility()"
+          [ngClass]="this.showPassword ? 'bi bi-eye' : 'bi bi-eye-slash'"
+        ></i>
+      </div>
+    </div>
+    <div class="response-container">
+      {{ this.response()?.message }}
+    </div>
+    <div class="info">Du hast noch kein Konto? Hier <a href="/register">registrieren</a>.</div>
+    <div class="submit">
+      <button type="submit" (click)="handleSubmit()">Anmelden</button>
+    </div>
+  </div>
+</div>

@@ -1,18 +1,21 @@
-import { Component, ViewChild, signal } from "@angular/core";
+import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
-import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
+import { ROUTE_LOGIN, ROUTE_REGISTER } from "../constants/route.constants";
 
 @Component({
   selector: "app-root",
-  imports: [RouterOutlet, MapOverviewComponent, SidebarComponent],
+  imports: [RouterOutlet, SidebarComponent],
   templateUrl: "./app.component.html",
   styleUrl: "./app.component.css",
   standalone: true,
 })
 export class AppComponent {
-  title = "OpenStreetMap with Angular";
-  @ViewChild(MapOverviewComponent) mapComponent!: MapOverviewComponent;
-
-
+  protected isSideBarCompatible() {
+    return (
+      location.pathname !== "/" &&
+      !location.pathname.startsWith(`/${ROUTE_LOGIN}`) &&
+      !location.pathname.startsWith(`/${ROUTE_REGISTER}`)
+    );
+  }
 }

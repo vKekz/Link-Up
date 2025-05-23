@@ -16,19 +16,16 @@ import { PostController } from "../controllers/post/post.controller";
  * @remarks With the following comment some issues were resolved: https://github.com/supabase/supabase-js/issues/936#issuecomment-2691252604
  */
 export class SupabaseService {
-  public readonly supabaseClient?: SupabaseClient;
+  public readonly supabaseClient: SupabaseClient;
   private readonly userController?: UserController;
   private readonly postController?: PostController;
 
   constructor() {
-    if (this.supabaseClient) {
-      return;
-    }
-
     this.supabaseClient = createClient(environment.supabaseUrl, environment.supabaseKey);
     this.userController = new UserController(this.supabaseClient);
     this.postController = new PostController(this.supabaseClient, this.getUserController());
   }
+
   public getUserController(): UserController {
     if (!this.userController) {
       throw new ControllerNotInitializedException(`${UserController.name} not initialized`);
