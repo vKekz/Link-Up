@@ -1,4 +1,3 @@
-
 import { MapOverviewComponent } from "./components/map-overview/map-overview.component";
 import { SidebarComponent } from "./components/sidebar/sidebar.component";
 import { DashboardComponent } from "./components/dashboard/dashboard.component";
@@ -9,7 +8,9 @@ import { SessionGuard } from "../guards/session.guard";
 import { ROUTE_DASHBOARD, ROUTE_HOME, ROUTE_LOGIN, ROUTE_REGISTER, ROUTE_SETTINGS } from "../constants/route.constants";
 import { UserSettingsComponent } from "./components/user-settings/user-settings.component";
 import { GroupChatComponent } from "./components/group-chat/group-chat.component";
-
+import { Routes } from "@angular/router";
+import { UserRegistrationFormComponent } from "./components/user-registration-form/user-registration-form.component";
+import { UserLoginFormComponent } from "./components/user-login-form/user-login-form.component";
 
 export const routes: Routes = [
   { path: ROUTE_HOME, component: LandingPageComponent, pathMatch: "full" },
