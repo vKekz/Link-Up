@@ -2,27 +2,34 @@
 <div class="landing-container">
   <!-- Navigationsleiste -->
   <nav class="navbar">
-    <img src="..//../../assets/img/linkup_logo.png" alt="LinkUp Logo" class="logo">
+    <img src="..//../../assets/img/linkup_logo.png" alt="LinkUp Logo" class="logo" />
     <div class="nav-links">
-      <a href="/login">Login</a>
-      <a href="/register">Registrieren</a>
+      @if (this.isLoggedIn()) {
+        <a href="/{{ ROUTE_DASHBOARD }}">Zum Dashboard</a>
+      } @else {
+        <a href="/{{ ROUTE_LOGIN }}">Login</a>
+        <a href="/{{ ROUTE_REGISTER }}">Registrieren</a>
+      }
     </div>
   </nav>
 
   <!-- Hero Sektion mit Video -->
   <section class="section hero">
     <div class="video-background">
-    <video onloadedmetadata="this.muted=true" autoplay loop  preload="auto">
-        <source src="../../../assets/img/startvideo.mp4" type="video/mp4">
-    </video> 
+      <video onloadedmetadata="this.muted=true" autoplay loop preload="auto">
+        <source src="../../../assets/img/startvideo.mp4" type="video/mp4" />
+      </video>
       <div class="overlay"></div>
     </div>
     <div class="hero-content centered">
       <h1>Willkommen bei LinkUp</h1>
       <p>Deine neue Social Media Plattform zum Vernetzen.</p>
-      <a href="/register" class="cta-button">Jetzt starten</a>
+      @if (!this.isLoggedIn()) {
+        <a href="/register" class="cta-button"> Jetzt starten </a>
+      }
     </div>
-  </section>  <!-- Features Section -->
+  </section>
+  <!-- Features Section -->
   <section class="section features-section">
     <div class="section-content-one">
       <div class="section-text">
@@ -63,11 +70,11 @@
   <!-- Community Section -->
   <section class="section community-section">
     <div class="section-content">
-    <div class="video-background">
-    <video autoplay muted loop>
-        <source src="../../../assets/img/friends_cheering.mp4" type="video/mp4">
-    </video>
-    </div>
+      <div class="video-background">
+        <video autoplay muted loop>
+          <source src="../../../assets/img/friends_cheering.mp4" type="video/mp4" />
+        </video>
+      </div>
       <div class="section-text">
         <h2>Entdecke neue Freunde</h2>
         <p class="main-text">Sieh dir an, was aktuell angesagt ist – alles an einem Ort</p>

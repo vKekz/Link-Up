@@ -2,7 +2,7 @@
 import { UserRegistrationResponse } from "../../contracts/user/user-registration.response";
 import { environment } from "../../environments/environment.production";
 import { UserLoginResponse } from "../../contracts/user/user-login.response";
-import { ProfileResponse } from "../../contracts/user/profile.response";
+import { ProfileResponse } from "../../contracts/profile/profile.response";
 import { signal, WritableSignal } from "@angular/core";
 import { AuthResponse, SupabaseClient } from "@supabase/supabase-js";
 import { ProfileRequest } from "../../contracts/profile/profile.request";
@@ -73,15 +73,15 @@ export class UserController extends ApiController {
       return;
     }
 
-    const response = await this.supabaseClient.from("profiles").update("user_name").eq("user_id", userId);
+    const response = await this.supabaseClient.from("profiles").update({ user_name: userName }).eq("user_id", userId);
     if (response.error) {
       return;
     }
 
     this.profileDetails.update((response) => {
       return {
-        user_id: response?.user_id,
-        full_name: userName,
+        ...response,
+        user_name: userName,
       } as ProfileResponse;
     });
 
@@ -96,12 +96,53 @@ export class UserController extends ApiController {
       return;
     }
 
-    await this.supabaseClient.storage.from("profile-avatars.storage").upload(`${userId}/avatar.png`, file);
+    const hasAvatar = this.profileDetails()?.profileImageUrl !== null;
+    if (hasAvatar) {
+      await this.supabaseClient.storage.from("profile-avatars.storage").update(`${userId}/avatar.png`, file);
+    } else {
+      await this.supabaseClient.storage.from("profile-avatars.storage").upload(`${userId}/avatar.png`, file);
+    }
+
+    const base64 = await this.imageToBase64(file);
+    this.profileDetails.update((response) => {
+      return {
+        ...response,
+        profileImageUrl: base64,
+      } as ProfileResponse;
+    });
   }
 
-  private async downloadProfileImage(userId: string) {
+  public async getProfileImageBase64(userId: string) {
     const response = await this.supabaseClient.storage.from("profile-avatars.storage").download(`${userId}/avatar.png`);
-    return response.data;
+    const file = response.data;
+
+    if (!file) {
+      return null;
+    }
+
+    return this.imageToBase64(file);
+  }
+
+  public async isLoggedIn() {
+    const session = await this.supabaseClient.auth.getSession();
+    return session.data.session !== null;
+  }
+
+  private async loadProfileDetails(): Promise<ProfileResponse | null> {
+    const user = await this.supabaseClient.auth.getUser();
+    if (!user.data.user) {
+      return null;
+    }
+
+    const response = await this.supabaseClient.from("profiles").select().eq("user_id", user.data.user?.id);
+    const foundProfile = response.data?.at(0);
+    const profileImageBase64 = await this.getProfileImageBase64(user.data.user.id);
+
+    return {
+      user_id: foundProfile.user_id,
+      user_name: foundProfile.user_name,
+      profileImageUrl: profileImageBase64,
+    } as ProfileResponse;
   }
 
   private async createProfile(response: AuthResponse, name: string) {
@@ -117,20 +158,9 @@ export class UserController extends ApiController {
     await this.supabaseClient.from("profiles").insert(profileRequest);
   }
 
-  private async loadProfileDetails(): Promise<ProfileResponse | null> {
-    const user = await this.supabaseClient.auth.getUser();
-    if (!user.data.user) {
-      return null;
-    }
-
-    const response = await this.supabaseClient.from("profiles").select().eq("user_id", user.data.user?.id);
-    const avatar = await this.downloadProfileImage(user.data.user.id);
-    const foundProfile = response.data?.at(0);
-
-    return {
-      user_id: foundProfile.user_id,
-      full_name: foundProfile.full_name,
-      avatar: avatar,
-    } as ProfileResponse;
+  private async imageToBase64(file: Blob) {
+    const arrayBuffer = await file.arrayBuffer();
+    const base64 = btoa(new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), ""));
+    return `data:image/png;base64, ${base64}`;
   }
 }

@@ -4,19 +4,42 @@
   margin: 25px;
 }
 
-.title-bar {
+.header {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 1rem;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  padding-bottom: 1rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  border-bottom: 1px solid var(--color-palette-white);
+}
+
+.rating {
+  color: var(--color-palette-light-green);
+}
+
+.rating-text {
+  margin-left: auto;
+  align-self: end;
+}
+
+.avatar img {
+  width: 50px;
+  height: 50px;
+  border: 1px solid var(--color-palette-white);
+  border-radius: 50%;
+  vertical-align: middle;
 }
 
 .settings {
   display: flex;
   flex-direction: column;
   max-width: 300px;
-  gap: 50px;
+  gap: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
 }
 
 .name-setting {
@@ -30,22 +53,17 @@ input[type="text"] {
   font-size: 1rem;
   height: 25px;
   background-color: var(--color-palette-white);
-  border: 2px solid var(--color-palette-dark-gray);
+  border: 2px solid var(--color-palette-dark-teal);
   border-radius: 10px;
   padding: 10px;
-}
-
-.sign-out {
-  text-align: center;
 }
 
 button {
   font-size: 1rem;
-  background-color: var(--color-palette-light-green);
-  border: none;
+  background-color: var(--color-palette-dark-teal);
+  border: 1px solid var(--color-palette-gray);
   padding: 10px;
   border-radius: 10px;
-  margin-bottom: 10px;
 }
 
 button:hover {

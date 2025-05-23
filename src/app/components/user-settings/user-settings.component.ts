@@ -1,24 +1,35 @@
 import { Component, ElementRef, ViewChild } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
+import { Router } from "@angular/router";
+import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
 
 @Component({
-  selector: "app-user-profile",
-  templateUrl: "./user-profile.component.html",
-  styleUrl: "./user-profile.component.css",
+  selector: "app-user-settings",
+  templateUrl: "./user-settings.component.html",
+  styleUrl: "./user-settings.component.css",
   standalone: true,
+  imports: [],
 })
-export class UserProfileComponent {
+export class UserSettingsComponent {
   @ViewChild("imageInput")
   public imageInput?: ElementRef;
 
   @ViewChild("nameInput")
   public nameInput?: ElementRef;
 
-  constructor(protected readonly supabaseService: SupabaseService) {}
+  constructor(
+    protected readonly supabaseService: SupabaseService,
+    private readonly router: Router
+  ) {}
 
   protected async handleSubmit() {
     await this.handleUserNameChange();
     await this.handleImageUpload();
+  }
+
+  protected async handleSignOut() {
+    await this.supabaseService.getUserController().signOut();
+    await this.router.navigate(["/"]);
   }
 
   protected getProfileDetails() {
@@ -28,6 +39,8 @@ export class UserProfileComponent {
   private async handleUserNameChange() {
     const input = this.nameInput?.nativeElement as HTMLInputElement;
     const name = input.value;
+
+    console.log(name);
 
     if (!name) {
       return;
@@ -39,7 +52,7 @@ export class UserProfileComponent {
   private async handleImageUpload() {
     const input = this.imageInput?.nativeElement as HTMLInputElement;
     const files = input.files;
-    if (!files) {
+    if (!files || files.length == 0) {
       return;
     }
 
@@ -50,4 +63,6 @@ export class UserProfileComponent {
 
     await this.supabaseService.getUserController().uploadProfileImage(file);
   }
+
+  protected readonly ROUTE_DASHBOARD = ROUTE_DASHBOARD;
 }

@@ -1,11 +1,4 @@
-﻿import {
-  ActivatedRouteSnapshot,
-  CanActivate,
-  GuardResult,
-  MaybeAsync,
-  Router,
-  RouterStateSnapshot,
-} from "@angular/router";
+﻿import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { SupabaseService } from "../services/supabase.service";
 import { ROUTE_HOME } from "../constants/route.constants";
@@ -22,17 +15,8 @@ export class AuthGuard implements CanActivate {
     private readonly router: Router
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): MaybeAsync<GuardResult> {
-    const session = this.supabaseService.supabaseClient.auth.getSession();
-    session.then(async (session) => {
-      if (session.data.session !== null) {
-        return false;
-      }
-
-      await this.router.navigate(["/", ROUTE_HOME]);
-      return true;
-    });
-
-    return true;
+  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
+    const isLoggedIn = await this.supabaseService.getUserController().isLoggedIn();
+    return isLoggedIn ? isLoggedIn : this.router.parseUrl(ROUTE_HOME);
   }
 }
