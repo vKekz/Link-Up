@@ -1,0 +1,158 @@
+/**
+ * Lädt dynamisch Posts mit Geokoordinaten aus Supabase und zeigt sie als Marker auf der Karte an
+ * @param longitude Optional: Längengrad des Zentrums
+ * @param latitude Optional: Breitengrad des Zentrums
+ */
+public async loadPostsWithCoordinates(longitude?: number, latitude?: number): Promise<void> {
+  if (!this.map) return;
+  
+  try {
+    // Alle vorhandenen Post-Marker entfernen
+    if (this.postMarkers && this.postMarkers.length) {
+      this.postMarkers.forEach(marker => {
+        if (this.map) this.map.removeLayer(marker);
+      });
+      this.postMarkers = [];
+    }
+    
+    // Lade-Animation anzeigen
+    const container = L.DomUtil.get('map');
+    if (!container) return;
+    
+    const loadingElement = L.DomUtil.create('div', 'map-loading');
+    loadingElement.id = 'mapLoadingIndicator';
+    loadingElement.innerHTML = `
+      <div class="loading-container">
+        <div class="spinner"></div>
+        <p>Lade Posts...</p>
+      </div>
+    `;
+    
+    container.appendChild(loadingElement);
+    
+    // Posts aus Supabase laden
+    const posts = await this.supabaseService.getPostController().posts();
+    console.log(`${posts.length} Posts geladen`);
+    
+    // Prüfen, welche Posts gültige Koordinaten haben
+    const postsWithCoords = posts.filter(
+      post => post.latitude !== undefined && post.longitude !== undefined
+    );
+    
+    console.log(`${postsWithCoords.length} Posts mit gültigen Koordinaten gefunden`);
+    
+    // Marker für jeden Post mit Koordinaten erstellen
+    postsWithCoords.forEach(post => {
+      if (post.latitude !== undefined && post.longitude !== undefined) {
+        // Marker-Icon
+        const icon = L.icon({
+          iconUrl: "assets/marker-icon-2x.png",
+          iconSize: [26, 35],
+          iconAnchor: [13, 35],
+          popupAnchor: [1, -34],
+          shadowUrl: "assets/marker-shadow.png",
+          shadowSize: [41, 41],
+        });
+        
+        // Marker erstellen und zur Karte hinzufügen
+        const marker = L.marker(
+          [post.latitude, post.longitude], 
+          { icon }
+        ).addTo(this.map!);
+        
+        // Popup mit Informationen erstellen
+        marker.bindPopup(`
+          <div class="marker-popup">
+            <h3>${post.title || "Kein Titel"}</h3>
+            <p>${post.description || "Keine Beschreibung"}</p>
+            ${post.tags && post.tags.length ? 
+              `<div class="post-tags">
+                ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join(" ")}
+              </div>` : ""}
+            <button class="btn-details" data-post-id="${post.id}">
+              Details anzeigen
+            </button>
+          </div>
+        `);
+        
+        // Event-Handler für den Details-Button
+        marker.on("popupopen", () => {
+          setTimeout(() => {
+            const popupContent = marker.getPopup()?.getElement();
+            const detailButton = popupContent?.querySelector(".btn-details");
+            
+            if (detailButton) {
+              detailButton.addEventListener("click", () => {
+                const postId = detailButton.getAttribute("data-post-id");
+                if (postId) {
+                  this.markerClicked.emit(post.title || "Post Details");
+                }
+              }, { once: true });
+            }
+          }, 0);
+        });
+        
+        // Marker zur Sammlung hinzufügen
+        this.postMarkers.push(marker);
+      }
+    });
+    
+    // Lade-Animation entfernen
+    const loadingIndicator = document.getElementById('mapLoadingIndicator');
+    if (container && loadingIndicator && container.contains(loadingIndicator)) {
+      container.removeChild(loadingIndicator);
+    }
+    
+    // Feedback an den Benutzer
+    if (this.postMarkers.length === 0) {
+      const msgElement = L.DomUtil.create('div', 'map-message');
+      msgElement.id = 'noPostsMessage';
+      msgElement.innerHTML = `
+        <div class="message-container">
+          <strong>Keine Posts mit Koordinaten</strong>
+          <p>In diesem Bereich wurden keine Posts mit Geokoordinaten gefunden.</p>
+        </div>
+      `;
+      
+      container.appendChild(msgElement);
+      
+      setTimeout(() => {
+        const msg = document.getElementById('noPostsMessage');
+        if (container && msg && container.contains(msg)) {
+          container.removeChild(msg);
+        }
+      }, 5000);
+    }
+    
+  } catch (error) {
+    console.error("Fehler beim Laden der Posts mit Koordinaten:", error);
+    
+    // Lade-Animation entfernen
+    const container = L.DomUtil.get('map');
+    const loadingIndicator = document.getElementById('mapLoadingIndicator');
+    if (container && loadingIndicator && container.contains(loadingIndicator)) {
+      container.removeChild(loadingIndicator);
+    }
+    
+    // Fehlermeldung anzeigen
+    if (container) {
+      const errorMsg = L.DomUtil.create('div', 'map-message error');
+      errorMsg.id = 'errorLoadingPosts';
+      errorMsg.innerHTML = `
+        <div class="message-container">
+          <strong>Fehler</strong>
+          <p>Beim Laden der Posts ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.</p>
+        </div>
+      `;
+      
+      container.appendChild(errorMsg);
+      
+      setTimeout(() => {
+        const msg = document.getElementById('errorLoadingPosts');
+        if (container && msg && container.contains(msg)) {
+          container.removeChild(msg);
+        }
+      }, 5000);
+    }
+  }
+}

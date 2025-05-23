@@ -1,0 +1,113 @@
+/* Styles für die Marker und Nachrichten auf der Karte */
+.map-loading, .map-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+  padding: 15px 20px;
+  min-width: 200px;
+  max-width: 80%;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.map-message.error {
+  background-color: #fff3f3;
+  border-left: 4px solid #e53935;
+}
+
+.loading-container, .message-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid var(--color-palette-teal);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Marker Popup Styles */
+.marker-popup {
+  padding: 5px;
+  min-width: 200px;
+}
+
+.marker-popup h3 {
+  margin: 0 0 10px;
+  color: var(--color-palette-dark-teal);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.marker-popup p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.tag {
+  background-color: var(--color-palette-light-teal);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  display: inline-block;
+}
+
+.btn-details {
+  background-color: var(--color-palette-teal);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  width: 100%;
+  transition: background-color 0.2s;
+}
+
+.btn-details:hover {
+  background-color: var(--color-palette-dark-teal);
+}
+
+/* Posts Button */
+.posts-button a {
+  font-size: 20px;
+  line-height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.posts-button a:hover {
+  background-color: #f2f2f2;
+}

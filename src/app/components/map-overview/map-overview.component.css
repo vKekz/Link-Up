@@ -47,5 +47,122 @@
 }
 
 .btn-details:hover {
-  background-color: #45a049;
+  background-color: var(--color-palette-teal);
+}
+
+/* Standort-Button Styles */
+.location-button a {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  background-color: white;
+  color: var(--color-palette-dark-teal);
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  transition: all 0.2s ease;
+}
+
+.location-button a:hover {
+  background-color: var(--color-palette-light-gray);
+}
+
+.location-button a.active {
+  background-color: var(--color-palette-light-teal);
+  color: white;
+}
+
+.location-icon {
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Standort-Marker Animation */
+.location-marker-inner {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% {
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 0.8;
+  }
+  50% {
+    stroke-width: 3;
+    stroke-opacity: 0.5;
+    fill-opacity: 0.5;
+  }
+  100% {
+    stroke-width: 2;
+    stroke-opacity: 1;
+    fill-opacity: 0.8;
+  }
+}
+
+/* Ladeanimation für Standortsuche */
+.location-loading-animation {
+  position: absolute;
+  bottom: 60px;
+  right: 10px;
+  z-index: 1000;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+  padding: 8px 12px;
+}
+
+.location-spinner {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+}
+
+.location-spinner p {
+  margin: 0 0 0 8px;
+  color: var(--color-palette-dark-teal);
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--color-palette-light-teal);
+  border-top: 2px solid var(--color-palette-teal);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Fehlermeldungs-Stil */
+.location-error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+}
+
+.error-container {
+  padding: 10px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  max-width: 300px;
+  border-left: 5px solid #d9534f;
+}
+
+.error-container strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #d9534f;
+}
+
+.error-container p {
+  margin: 0;
+  font-size: 14px;
 }
