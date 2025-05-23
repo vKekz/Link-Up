@@ -186,3 +186,22 @@
 .delete-button:hover {
     background-color: #cc0000;
 }
+.joinButton {
+    width: 110px;
+    padding: 10px; /* More padding for button */
+    background-color: var(--color-palette-teal); /* Teal button */
+    color: var(--color-palette-white);
+    border: none;
+    border-radius: 9px; /* More rounded button */
+    cursor: pointer;
+    font-size: 1em; /* Larger font size */
+    font-weight: 600; /* Bolder button text */
+    font-family: var(--font-secondary-wide); /* Wide font for button */
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+.joinButton:hover {
+    background-color: var(--color-palette-dark-teal); /* Darker teal on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}.joinButton:active {
+    transform: translateY(0); /* Press effect */
+}
