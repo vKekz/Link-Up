@@ -1,12 +1,12 @@
-import { Component, computed, inject, OnInit, OnDestroy, ElementRef, ViewChild, WritableSignal, signal } from "@angular/core";
+import { Component, ElementRef, OnDestroy, OnInit, signal, ViewChild, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { PostResponse } from "../../../contracts/post/post.response";
-import { NgClass, CommonModule } from "@angular/common";
+import { CommonModule, NgClass } from "@angular/common";
 import { PostComponent } from "../post/post.component";
 import { FormsModule } from "@angular/forms";
 import { PostRequest } from "../../../contracts/post/post.request";
 import { HttpClient } from "@angular/common/http";
-import { Subject, debounceTime, distinctUntilChanged, takeUntil } from "rxjs";
+import { debounceTime, distinctUntilChanged, Subject, takeUntil } from "rxjs";
 
 // Schnittstelle für die Adressvorschläge
 interface AddressSuggestion {
@@ -68,7 +68,6 @@ export class PostsFormComponent implements OnInit, OnDestroy {
 
     //url http://localhost:4200/posts/ca8e2846-64b4-4026-8cdd-f8db024aa724
 
-
     const url = location.pathname;
     const regex = /\/posts\/([a-zA-Z0-9-]+)/;
     const match = url.match(regex);
@@ -77,18 +76,16 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       console.log("Post ID:", postId);
       this.showAllPosts = false;
       // Hier können Sie den Post mit der ID postId abrufen und anzeigen
-     this.getPostById(postId).then((post) => {
-        
+      this.getPostById(postId).then((post) => {
         if (post) {
           this.selectedPost.set(post);
           console.log("Post details:", post);
         }
       });
-
     }
 
     /*
-    
+
     */
   }
 
@@ -260,4 +257,3 @@ export class PostsFormComponent implements OnInit, OnDestroy {
     // this.hasJoinedChat.set(true);
   }
 }
-

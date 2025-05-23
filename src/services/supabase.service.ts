@@ -25,6 +25,7 @@ export class SupabaseService {
     this.userController = new UserController(this.supabaseClient);
     this.postController = new PostController(this.supabaseClient, this.getUserController());
   }
+
   public getUserController(): UserController {
     if (!this.userController) {
       throw new ControllerNotInitializedException(`${UserController.name} not initialized`);

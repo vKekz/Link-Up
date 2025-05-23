@@ -18,8 +18,7 @@ export class PostController extends ApiController {
     console.log("PostController initialized");
   }
 
-
-  public async createPost(postRequest: PostRequest & {geo_location?: string}) {
+  public async createPost(postRequest: PostRequest & { geo_location?: string }) {
     //replace longitude and latitude with point
     if (postRequest.longitude && postRequest.latitude) {
       postRequest.geo_location = `POINT(${postRequest.longitude} ${postRequest.latitude})`;
@@ -102,10 +101,10 @@ export class PostController extends ApiController {
   ): Promise<PostResponse[]> {
     // PostgreSQL-Funktion ST_DWithin, um Posts innerhalb eines bestimmten Radius zu finden
     // Benötigt PostGIS-Erweiterung in Supabase
-    const { data, error } = await this.supabaseClient.rpc("find_posts_within_distance", {
-      center_lon: longitude,
-      center_lat: latitude,
-      radius_meters: radius_meters,
+    const { data, error } = await this.supabaseClient.rpc("nearby_posts", {
+      longitude,
+      latitude,
+      radius_meters,
     });
 
     if (error) {
@@ -116,16 +115,14 @@ export class PostController extends ApiController {
     return data as PostResponse[];
   }
   public async loadPostById(id: string): Promise<PostResponse | null> {
-    const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select().eq('id', id).single();
-    
+    const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select().eq("id", id).single();
+
     if (error) {
       console.error("Fehler beim Laden des Posts:", error);
       return null;
     }
-    
+
     return data as PostResponse;
-
-
   }
   private async loadPosts() {
     const { data, error } = await this.supabaseClient.from(this.POSTS_TABLE_NAME).select();
