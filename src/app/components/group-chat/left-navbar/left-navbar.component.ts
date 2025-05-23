@@ -1,25 +1,31 @@
-import { Component, input, Input, signal } from '@angular/core';
+import { Component, computed, input, Input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Tables } from '../../../types/supabase.types';
+import { GroupChatService, GroupChatWithLastMessageAndUnreadCount } from '../../../../services/group-chat.service';
 
-interface EventItem {
-    id: string;
-    image: string;
-    title: string;
-    subtitle: string;
-    time: string;
-    count: number;
-}
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-left-navbar',
     standalone: true,
-    imports: [CommonModule],
+    imports: [CommonModule, RouterLink],
     templateUrl: './left-navbar.component.html',
     styleUrls: ['./left-navbar.component.css']
 })
 export class LeftNavbarComponent {
 
 
-    readonly events = input<Tables<'post_chat'>[]>([])
+    events = signal<GroupChatWithLastMessageAndUnreadCount>([])
+
+
+
+    constructor(
+        private groupChatService: GroupChatService
+    ) {
+        this.groupChatService.getGroupChatWithLastMessage().then((groupChat) => {
+            console.log(groupChat)
+            this.events.set(groupChat)
+        });
+
+    }
+
 } 

@@ -7,5 +7,5 @@ export const routes: Routes = [
   { path: "", component: AppComponent, pathMatch: "full" },
   { path: "register", component: UserRegistrationFormComponent, pathMatch: "full" },
   { path: "login", component: UserLoginFormComponent, pathMatch: "full" },
-  { path: "group-chat/:id", component: GroupChatComponent, pathMatch: "full" },
+  { path: "group-chat", component: GroupChatComponent, pathMatch: "full" },
 ];

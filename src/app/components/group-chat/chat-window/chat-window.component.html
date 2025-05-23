@@ -1,0 +1,75 @@
+@if (groupChatExists()) {
+  <div class="chat-window-container">
+    <header class="chat-header">
+      <div class="chat-header-info">
+        <h1>{{ chat()?.[0]?.title }}</h1>
+        <p>{{ chat()?.[0]?.participant_count }} participants</p>
+      </div>
+      <div class="chat-header-options">
+        @for (chat_tags of chat()?.[0]?.tags; track chat_tags) {
+          <span class="chat-tag">{{ chat_tags + "\t" }}</span>
+        }
+        @if (chat()?.[0]?.event_date) {
+          <b>am {{ chat()?.[0]?.event_date | date: "MMM d, yyyy" }}</b>
+        }
+      </div>
+    </header>
+
+    <main class="chat-messages" #messageContainer>
+      @for (message of messages(); track message.message_id) {
+        @if (message.message_sender_id === userId()) {
+          <div class="message-item sent">
+            <div class="message-content">
+              <div class="message-bubble">
+                <p>{{ message.message_content }}</p>
+              </div>
+              <span class="timestamp">{{ message.message_created_at | date: "MMM d, yyyy" }}</span>
+            </div>
+          </div>
+        } @else {
+          <div class="message-item received">
+            <div class="message-content">
+              <p class="sender-name">{{ message.profile_name ? message.profile_name : message.user_email }}</p>
+              <div class="message-bubble">
+                <p>{{ message.message_content }}</p>
+              </div>
+              <span class="timestamp">{{ message.message_created_at | date: "MMM d, yyyy" }}</span>
+            </div>
+          </div>
+        }
+      }
+    </main>
+
+    <footer class="chat-footer">
+      <div class="quick-replies">
+        <button class="quick-reply-btn" (click)="messageFormControl.setValue('Ich bin dabei!')">Ich bin dabei!</button>
+        <button class="quick-reply-btn" (click)="messageFormControl.setValue('Ich komme später')">
+          Ich komme später
+        </button>
+        <button class="quick-reply-btn" (click)="messageFormControl.setValue('Ich kann nicht kommen')">
+          Ich kann nicht kommen
+        </button>
+        <button class="quick-reply-btn" (click)="messageFormControl.setValue('Ich brauche eine Wegbeschreibung')">
+          Ich brauche eine Wegbeschreibung
+        </button>
+        <button class="quick-reply-btn" (click)="messageFormControl.setValue('Was soll ich mitbringen?')">
+          Was soll ich mitbringen?
+        </button>
+      </div>
+      <div class="message-input-area">
+        <input
+          type="text"
+          placeholder="Schreib eine Nachricht..."
+          class="message-input"
+          [formControl]="messageFormControl"
+          (keyup.enter)="sendMessage()"
+        />
+        <button class="send-button" (click)="sendMessage()">▶</button>
+      </div>
+    </footer>
+  </div>
+} @else {
+  <div class="not-found-container">
+    <h1 class="no-chat-message">There is no group chat open</h1>
+  </div>
+}
