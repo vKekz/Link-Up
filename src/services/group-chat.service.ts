@@ -39,11 +39,6 @@ export class GroupChatService {
   public readonly supabaseClient?: SupabaseClient<Database>;
 
   constructor() {
-
-    if (this.supabaseClient) {
-      return;
-    }
-
     this.supabaseClient = createClient<Database>(environment.supabaseUrl, environment.supabaseKey);
   }
 
