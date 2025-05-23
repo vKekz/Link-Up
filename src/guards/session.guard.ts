@@ -1,7 +1,7 @@
 ﻿import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from "@angular/router";
 import { Injectable } from "@angular/core";
 import { SupabaseService } from "../services/supabase.service";
-import { ROUTE_DASHBOARD } from "../constants/route.constants";
+import { ROUTE_MAP } from "../constants/route.constants";
 
 /**
  * Represents the guard that makes sure that signed-in users cannot log in or register again.
@@ -17,6 +17,6 @@ export class SessionGuard implements CanActivate {
 
   async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean | UrlTree> {
     const isLoggedIn = await this.supabaseService.getUserController().isLoggedIn();
-    return isLoggedIn ? this.router.parseUrl(ROUTE_DASHBOARD) : true;
+    return isLoggedIn ? this.router.parseUrl(ROUTE_MAP) : true;
   }
 }

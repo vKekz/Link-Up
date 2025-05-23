@@ -2,7 +2,7 @@ import { Component, ElementRef, signal, ViewChild, WritableSignal } from "@angul
 import { SupabaseService } from "../../../services/supabase.service";
 import { UserRegistrationResponse } from "../../../contracts/user/user-registration.response";
 import { Router } from "@angular/router";
-import { ROUTE_DASHBOARD } from "../../../constants/route.constants";
+import { ROUTE_MAP } from "../../../constants/route.constants";
 import { NgClass } from "@angular/common";
 
 @Component({
@@ -53,7 +53,7 @@ export class UserRegistrationFormComponent {
 
     const response = await this.supabaseService.getUserController().signUpUser(this.name, this.email, this.password);
     if (!response.error) {
-      await this.router.navigate(["/", ROUTE_DASHBOARD]);
+      await this.router.navigate(["/", ROUTE_MAP]);
       return;
     }
 

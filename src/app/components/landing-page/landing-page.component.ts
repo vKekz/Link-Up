@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, WritableSignal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
-import { ROUTE_DASHBOARD, ROUTE_LOGIN, ROUTE_REGISTER } from "../../../constants/route.constants";
+import { ROUTE_MAP, ROUTE_LOGIN, ROUTE_REGISTER } from "../../../constants/route.constants";
 
 @Component({
   selector: "app-landing-page",
@@ -17,7 +17,7 @@ export class LandingPageComponent implements OnInit {
     this.isLoggedIn.set(await this.supabaseService.getUserController().isLoggedIn());
   }
 
-  protected readonly ROUTE_DASHBOARD = ROUTE_DASHBOARD;
+  protected readonly ROUTE_DASHBOARD = ROUTE_MAP;
   protected readonly ROUTE_LOGIN = ROUTE_LOGIN;
   protected readonly ROUTE_REGISTER = ROUTE_REGISTER;
 }
