@@ -26,6 +26,41 @@
 
                 <label for="postDate">Datum:</label>
                 <input [(ngModel)]="newPost.date" type="date" id="postDate" name="date" required=>
+                <input [(ngModel)]="newPost.tags" type="text" id="postTags" name="tags">                <label for="postLocation">Location:</label>
+                <div class="location-search-container">                    <input [(ngModel)]="newPost.location" 
+                           type="text" 
+                           id="postLocation" 
+                           name="location" 
+                           placeholder="Adresse eingeben (mindestens 3 Zeichen)..." 
+                           (input)="searchAddress(newPost.location ?? '')"
+                           [class.with-suggestions]="addressSuggestions.length > 0"
+                           autocomplete="off">
+                    
+                    <!-- Ladeindikator -->
+                    <div class="loading-spinner" *ngIf="isSearching"></div>
+                      <!-- Adressvorschläge -->
+                    <div class="address-suggestions" *ngIf="addressSuggestions.length > 0" role="listbox" aria-label="Adressvorschläge">
+                        <div class="suggestion-item" 
+                             *ngFor="let suggestion of addressSuggestions"
+                             (click)="selectAddress(suggestion)"
+                             role="option"
+                             tabindex="0"
+                             (keydown.enter)="selectAddress(suggestion)">
+                            {{ suggestion.display_name }}
+                        </div>
+                    </div>                    <!-- Hilfstext -->
+                    <small class="hint-text" *ngIf="!isSearching && !addressSuggestions.length && newPost.location && newPost.location.length > 0 && !selectedAddress">
+                        Mindestens 3 Zeichen eingeben, um die Suche zu starten.
+                    </small>
+                    <!-- Anzeige bei ausgewählter Adresse -->
+                    <small class="success-text" *ngIf="selectedAddress">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <path d="M22 4 12 14.01l-3-3"></path>
+                        </svg>
+                        Adresse mit Geokoordinaten ausgewählt
+                    </small>
+                </div>
 
                 <label for="postDescription">Beschreibung:</label>
                 <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description">              
