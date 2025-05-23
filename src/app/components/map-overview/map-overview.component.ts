@@ -39,6 +39,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private locationErrorCount = 0;
   private maxLocationErrors = 3;
   private lastLocationFound = false;
+  private hasLocationPermission = false;
 
   private radius = signal(5000);
 
@@ -147,8 +148,8 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
             <input id="radius-slider" type="range" min="500" max="30000" value="5000" step="500" style="width: 180px;" />
             <div style="display: flex; justify-content: space-between; width: 180px; font-size: 10px; color: #666;">
               <span>500m</span>
-              <span>5km</span>
-              <span>15km</span>
+              <span>10km</span>
+              <span>20km</span>
               <span>30km</span>
             </div>
             <div id="radius-value" style="font-size: 12px; font-weight: bold; color: #333;">5.0km</div>
@@ -376,6 +377,12 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private locateUser(): void {
     if (!this.map) return;
 
+    // If we already found location successfully, don't try again
+    if (this.lastLocationFound && this.hasLocationPermission) {
+      console.log('Location already found, skipping new location request');
+      return;
+    }
+
     // Entferne eventuelle bestehende Lokalisierungs-Event-Handler
     this.map.off('locationfound');
     this.map.off('locationerror');
@@ -389,15 +396,15 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     // Zeige Lade-Animation an
     this.showLocatingAnimation();
 
-    // Standortverfolgung starten mit verbesserten Optionen
+    // Standortverfolgung starten ohne kontinuierliche Aktualisierung
     this.isLocating = true;
     this.map.locate({
       setView: true,
       maxZoom: 14,
-      watch: true,              // Kontinuierliche Aktualisierung
-      enableHighAccuracy: true, // Hochpräzise Standortbestimmung aktivieren
-      timeout: 10000,           // Mittlerer Timeout (10 Sekunden) pro Versuch
-      maximumAge: 5000,         // Akzeptiere Standortdaten, die nicht älter als 5 Sekunden sind
+      watch: false,             // Changed: No continuous watching
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 5000,
     });
 
     // Event-Handler für gefundenen Standort
@@ -405,9 +412,14 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       // Entferne Lade-Animation
       this.hideLocatingAnimation();
       this.lastLocationFound = true;
+      this.hasLocationPermission = true; // Mark permission as granted
       this.locationErrorCount = 0;
+      this.isLocating = false; // Stop locating
 
       console.log('Standort gefunden:', e.latlng, 'Genauigkeit:', e.accuracy);
+
+      // Stop any further location watching
+      this.map?.stopLocate();
 
       // Entferne den bestehenden Standortmarker, falls vorhanden
       if (this.locationMarker) {
@@ -415,78 +427,100 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
         this.locationMarker = null;
       }
 
-      // Radius für die Genauigkeit (accuracy) - mit sinnvoller Obergrenze
-      const radius = Math.min(e.accuracy, 500); // Begrenze den Radius auf 500 Meter
-
-      // LayerGroup für beide Kreise erstellen
-      const locGroup = L.layerGroup();
-
-      // Äußerer, transparenter Genauigkeitskreis
-      const circle = L.circle(e.latlng, {
-        radius: this.radius(),
-        color: 'var(--color-palette-light-teal)',
-        fillColor: 'var(--color-palette-light-teal)',
-        fillOpacity: 0.15,
-        weight: 1
-      }).addTo(locGroup);
-
-      this.radiusCircle = circle;
-
-      // Pulsierende Animation für den inneren Standortkreis
-      const innerRadius = Math.min(radius * 0.15, 15); // Kleinerer Kreis, max 15 Meter
-
-      // Innerer, dunklerer Standortkreis
-      const innerCircle = L.circle(e.latlng, {
-        radius: innerRadius,
-        color: 'var(--color-palette-dark-teal)',
-        fillColor: 'var(--color-palette-teal)',
-        fillOpacity: 0.8,
-        weight: 2,
-        className: 'location-marker-inner' // Klasse für CSS-Animation
-      }).addTo(locGroup);
-
-      // LayerGroup zur Karte hinzufügen und als locationMarker speichern
-      locGroup.addTo(this.map!);
-      this.locationMarker = locGroup;
-
-      // // Update der Location Button-Anzeige, um zu zeigen, dass Standort aktiv ist
-      // this.updateLocationButtonState(true);
+      // Show radius circle at user's location
+      this.showRadiusCircleAtLocation(e.latlng);
     });
 
     // Event-Handler für Fehler bei der Standortbestimmung
     this.map.on('locationerror', (e: L.ErrorEvent) => {
       this.locationErrorCount++;
+      this.isLocating = false;
 
       console.error(`Standortbestimmung fehlgeschlagen (${this.locationErrorCount}/${this.maxLocationErrors}):`, e.message);
 
-      // Nur wenn wir noch keinen Standort hatten oder nach mehreren Fehlern zeigen wir eine Meldung an
-      if (!this.lastLocationFound || this.locationErrorCount >= this.maxLocationErrors) {
+      // Stop location watching
+      this.map?.stopLocate();
+
+      // If permission denied or after max errors, show radius at default location
+      if (e.message.toLowerCase().includes('permission') ||
+        e.message.toLowerCase().includes('denied') ||
+        this.locationErrorCount >= this.maxLocationErrors) {
+
         // Entferne Lade-Animation
         this.hideLocatingAnimation();
+        this.hasLocationPermission = false;
 
-        // Visuelle Rückmeldung auf der Karte
-        this.showLocationErrorMessage();
+        // Show radius circle at default location (DHBW Mannheim)
+        const defaultLocation = L.latLng(49.47457750584654, 8.534245487974458);
+        this.showRadiusCircleAtLocation(defaultLocation);
 
-        // Bei mehrfachen Fehlern: Stoppe die Standortverfolgung kurz und versuche es dann erneut
-        if (this.isLocating) {
-          if (this.map) {
-            this.map.stopLocate();
-          }
-          this.isLocating = false;
+        // Set map view to default location
+        this.map?.setView(defaultLocation, 12);
 
-          // Versuche es nach einer Pause erneut
-          setTimeout(() => {
-            if (this.locationErrorCount >= this.maxLocationErrors) {
-              this.locationErrorCount = 0;
-            }
+        console.log('Permission denied or max errors reached, showing radius at default location');
+      } else {
+        // For other errors, try again after a short delay
+        setTimeout(() => {
+          if (this.locationErrorCount < this.maxLocationErrors) {
             this.locateUser();
-          }, 5000); // Kürzere Wartezeit für bessere Benutzererfahrung
-        }
-
-        // // Update der Location Button-Anzeige
-        // this.updateLocationButtonState(false);
+          }
+        }, 3000);
       }
     });
+  }
+
+  /**
+   * Shows radius circle at the specified location
+   * @param location The location to center the radius circle
+   */
+  private showRadiusCircleAtLocation(location: L.LatLng): void {
+    if (!this.map) return;
+
+    // Remove existing location marker
+    if (this.locationMarker) {
+      this.map.removeLayer(this.locationMarker);
+      this.locationMarker = null;
+    }
+
+    // Create layer group for location display
+    const locGroup = L.layerGroup();
+
+    // Outer radius circle
+    const circle = L.circle(location, {
+      radius: this.radius(),
+      color: 'var(--color-palette-light-teal)',
+      fillColor: 'var(--color-palette-light-teal)',
+      fillOpacity: 0.15,
+      weight: 1
+    }).addTo(locGroup);
+
+    this.radiusCircle = circle;
+
+    // Inner location marker (if we have user location)
+    if (this.hasLocationPermission) {
+      // Small pulsing circle for user location
+      const innerCircle = L.circle(location, {
+        radius: 15,
+        color: 'var(--color-palette-dark-teal)',
+        fillColor: 'var(--color-palette-teal)',
+        fillOpacity: 0.8,
+        weight: 2,
+        className: 'location-marker-inner'
+      }).addTo(locGroup);
+    } else {
+      // Static marker for default location
+      const defaultMarker = L.circle(location, {
+        radius: 25,
+        color: '#666',
+        fillColor: '#999',
+        fillOpacity: 0.6,
+        weight: 2
+      }).addTo(locGroup);
+    }
+
+    // Add layer group to map
+    locGroup.addTo(this.map);
+    this.locationMarker = locGroup;
   }
 
   // Hilfsmethode: Zeigt eine Ladeanimation für die Standortsuche an
