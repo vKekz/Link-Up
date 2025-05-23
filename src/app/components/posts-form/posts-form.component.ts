@@ -45,12 +45,13 @@ export class PostsFormComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   protected selectedPost: WritableSignal<PostResponse | null> = signal(null);
+  protected hasJoinedChat: WritableSignal<boolean> = signal(false);
 
   constructor(
     private readonly subabaseService: SupabaseService,
     private readonly http: HttpClient
   ) {}
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     // Adresssuche mit Debouncing einrichten
     this.searchTerms
       .pipe(
@@ -75,18 +76,13 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       const postId = match[1];
       console.log("Post ID:", postId);
       this.showAllPosts = false;
-      // Hier können Sie den Post mit der ID postId abrufen und anzeigen
-      this.getPostById(postId).then((post) => {
-        if (post) {
-          this.selectedPost.set(post);
-          console.log("Post details:", post);
-        }
-      });
+
+      const post = await this.getPostById(postId);
+      this.selectedPost.set(post);
+
+      const hasJoinedChat = await this.subabaseService.getPostController().hasJoinedPostChat(postId);
+      this.hasJoinedChat.set(hasJoinedChat);
     }
-
-    /*
-
-    */
   }
 
   ngOnDestroy(): void {
@@ -239,8 +235,11 @@ export class PostsFormComponent implements OnInit, OnDestroy {
     this.addressSuggestions = []; // Vorschläge ausblenden
   }
 
-  showPostDetail(post: PostResponse) {
+  async showPostDetail(post: PostResponse) {
     this.selectedPost.set(post);
+
+    const hasJoinedChat = await this.subabaseService.getPostController().hasJoinedPostChat(post.id);
+    this.hasJoinedChat.set(hasJoinedChat);
   }
 
   closePostDetail() {

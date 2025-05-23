@@ -1,12 +1,11 @@
 <div class="page-wrapper">
   @if (!this.selectedPost()) {
-    
-  <div class="post-grid" id="post-grid">
-       @for (post of this.getPosts(); track post.id) {
+    <div class="post-grid" id="post-grid">
+      @for (post of this.getPosts(); track post.id) {
         <app-post [post]="post" (click)="this.showPostDetail(post)"></app-post>
       }
     </div>
-      <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
+    <button class="toggle-btn" (click)="this.toggleForm()">Event erstellen</button>
   }
 
   @if (this.shouldShowCreationForm) {
@@ -141,10 +140,8 @@
           </div>
         </div>
         <div class="post-actions">
-          @if (selectedPost()?.open_to_join) {
-            <button class="join-button" (click)="joinPost()">
-              <span class="emoji">🤝</span> Teilnehmen
-            </button>
+          @if (selectedPost()?.open_to_join && !this.hasJoinedChat()) {
+            <button class="join-button" (click)="joinPost()"><span class="emoji">🤝</span> Teilnehmen</button>
           }
         </div>
       </div>
