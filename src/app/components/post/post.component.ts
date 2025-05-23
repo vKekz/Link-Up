@@ -74,7 +74,7 @@ export class PostComponent implements OnInit {
     const min = 1;
     const max = 10;
     const randomIndex = Math.floor(Math.random() * (max - min + 1)) + min;
-    this.randomBackgroundUrl = `../../../assets/event-backgrounds/background${randomIndex}.jpg`;
+    this.randomBackgroundUrl = `/assets/event-backgrounds/background${randomIndex}.jpg`;
   }
 
   get eventStatusText(): string {
