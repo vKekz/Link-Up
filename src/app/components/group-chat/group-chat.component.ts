@@ -8,7 +8,7 @@ import { Database } from '../../types/supabase.types';
   selector: 'app-group-chat',
   imports: [LeftNavbarComponent, ChatWindowComponent],
   templateUrl: './group-chat.component.html',
-  styleUrl: './group-chat.component.css',
+  styleUrls: ['./group-chat.component.css'],
   standalone: true,
 })
 export class GroupChatComponent {
