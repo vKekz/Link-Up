@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, computed, inject, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { SupabaseService } from '../../../services/supabase.service';
 import { PostResponse } from '../../../contracts/post/post.response';
 import { NgClass, CommonModule } from '@angular/common';
@@ -24,6 +24,8 @@ interface AddressSuggestion {
 })
 
 export class PostsFormComponent implements OnInit, OnDestroy {
+  @ViewChild("openToJoinInput")
+  public openToJoinInput?: ElementRef;
   public shouldShowCreationForm: boolean = false;
   public hasTriedSubmit: boolean = false;
   public newPost: PostRequest = {
@@ -77,7 +79,7 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       if (!userId) {
         return;
       }
-
+      this.newPost.open_to_join = (this.openToJoinInput?.nativeElement as HTMLInputElement).checked;
       this.newPost.creator_id = userId;
       let tags = this.tagsInput.split(',').map(tag => tag.trim()).filter(tag => tag.length > 0);
       console.log(this.newPost);

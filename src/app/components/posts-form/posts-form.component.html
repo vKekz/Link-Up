@@ -99,7 +99,7 @@
         <input [(ngModel)]="newPost.description" type="text" id="postDescription" name="description" />
 
         <div class="checkbox-group">
-          <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join" />
+          <input [(ngModel)]="newPost.open_to_join" type="checkbox" id="postOpenToJoin" name="open_to_join" #openToJoinInput/>
           <label for="postOpenToJoin">Öffentlich beiträtbar</label>
         </div>
 
