@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, OnDestroy, ElementRef, ViewChild } from "@angular/core";
+import { Component, computed, inject, OnInit, OnDestroy, ElementRef, ViewChild, WritableSignal, signal } from "@angular/core";
 import { SupabaseService } from "../../../services/supabase.service";
 import { PostResponse } from "../../../contracts/post/post.response";
 import { NgClass, CommonModule } from "@angular/common";
@@ -44,7 +44,7 @@ export class PostsFormComponent implements OnInit, OnDestroy {
   private searchTerms = new Subject<string>();
   private destroy$ = new Subject<void>();
 
-  selectedPost: any = null;
+  protected selectedPost: WritableSignal<PostResponse | null> = signal(null);
 
   constructor(
     private readonly subabaseService: SupabaseService,
@@ -77,7 +77,14 @@ export class PostsFormComponent implements OnInit, OnDestroy {
       console.log("Post ID:", postId);
       this.showAllPosts = false;
       // Hier können Sie den Post mit der ID postId abrufen und anzeigen
-      this.getPostById(postId);
+     this.getPostById(postId).then((post) => {
+        
+        if (post) {
+          this.selectedPost.set(post);
+          console.log("Post details:", post);
+        }
+      });
+
     }
 
     /*
@@ -235,15 +242,16 @@ export class PostsFormComponent implements OnInit, OnDestroy {
     this.addressSuggestions = []; // Vorschläge ausblenden
   }
 
-  showPostDetail(post: any) {
-    this.selectedPost = post;
+  showPostDetail(post: PostResponse) {
+    this.selectedPost.set(post);
   }
 
   closePostDetail() {
-    this.selectedPost = null;
+    this.selectedPost.set(null);
+    this.showAllPosts = true;
   }
   protected async joinPost() {
-    const postId = this.selectedPost?.id;
+    const postId = this.selectedPost()?.id;
     if (!postId) {
       return;
     }
@@ -252,5 +260,4 @@ export class PostsFormComponent implements OnInit, OnDestroy {
     // this.hasJoinedChat.set(true);
   }
 }
-
 
