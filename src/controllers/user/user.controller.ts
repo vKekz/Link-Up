@@ -7,6 +7,7 @@ import { signal, WritableSignal } from "@angular/core";
 import { AuthResponse, SupabaseClient } from "@supabase/supabase-js";
 import { ProfileRequest } from "../../contracts/profile/profile.request";
 import { ChangeNameResponse } from "../../contracts/profile/change-name.response";
+import { UsernameResponse } from "../../contracts/profile/username.response";
 
 /**
  * Represents the controller that is used for user authentication.
@@ -88,6 +89,16 @@ export class UserController extends ApiController {
     return {
       newName: userName,
     } as ChangeNameResponse;
+  }
+
+  public async getUserName(userId: string) {
+    const response = await this.supabaseClient.from("profiles").select("user_name").eq("user_id", userId);
+    const data = response.data?.at(0);
+    if (!data) {
+      return null;
+    }
+
+    return { userName: data.user_name } as UsernameResponse;
   }
 
   public async uploadProfileImage(file: File) {
