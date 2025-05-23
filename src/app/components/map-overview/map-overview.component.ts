@@ -22,12 +22,12 @@ export interface Marker {
 export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   private map?: L.Map;
   private markersData = signal<Marker[]>([
-    { lat: 49.4738333, lng: 8.534333333333333, title: "DHBW Mannheim", description: "Beschreibung Incoming" },
-    { lat: 48.8566, lng: 2.3522, title: "Paris", description: "Capital of France" },
-    { lat: 40.7128, lng: -74.006, title: "New York", description: "The Big Apple" },
+    // { lat: 49.4738333, lng: 8.534333333333333, title: "DHBW Mannheim", description: "Beschreibung Incoming" },
+    // { lat: 48.8566, lng: 2.3522, title: "Paris", description: "Capital of France" },
+    // { lat: 40.7128, lng: -74.006, title: "New York", description: "The Big Apple" },
   ]);
   private locationMarker: L.LayerGroup | null = null;
-  private postMarkers: L.Marker[] = [];
+  
   
   // Service injizieren
   private supabaseService = inject(SupabaseService);
@@ -45,7 +45,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     console.log("NG after view init");
     this.initMap();
-    this.addMarkers();
+    // this.addMarkers();
 
     // Zusätzliche Map-Resize-Behandlung für verschiedene Fälle
     setTimeout(() => {
@@ -70,6 +70,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       this.map.remove();
     }
   }
+
+  private locationControlInstance?: L.Control;
+  private postsControlInstance?: L.Control;
 
   private initMap(): void {
     if (this.map) {
@@ -109,7 +112,57 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     // Standort lokalisieren und blauen Punkt anzeigen
     this.locateUser();
 
-    // Standort-Button zur Karte hinzufügen
+    this.addLocationAndPostsButtons();
+  }
+
+  private addLocationAndPostsButtons(): void {
+    console.log("Add location and posts buttons in Method");
+    if (!this.map) return;
+
+    // Entferne alte Controls, falls vorhanden
+    if (this.locationControlInstance) {
+      this.map.removeControl(this.locationControlInstance);
+      this.locationControlInstance = undefined;
+    }
+    if (this.postsControlInstance) {
+      this.map.removeControl(this.postsControlInstance);
+      this.postsControlInstance = undefined;
+    }
+
+    // Standort-Button
+    const LocationControl = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd: () => {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control location-button');
+        container.innerHTML = '<a href="#" title="Zeige meinen Standort"><span class="location-icon">📍</span></a>';
+        container.onclick = () => {
+          this.locateUser();
+          return false;
+        };
+        return container;
+      }
+    });
+    this.locationControlInstance = new LocationControl();
+    this.map.addControl(this.locationControlInstance);
+
+    // Posts-Button
+    const PostsControl = L.Control.extend({
+      options: { position: 'bottomright' },
+      onAdd: () => {
+        const container = L.DomUtil.create('div', 'leaflet-bar leaflet-control posts-button');
+        container.innerHTML = '<a href="#" title="Posts in der Umgebung laden"><span class="posts-icon">📋</span></a>';
+        container.onclick = () => {
+          if (this.map) {
+            const center = this.map.getCenter();
+            this.loadPostsNearLocation(center.lng, center.lat);
+          }
+          return false;
+        };
+        return container;
+      }
+    });
+    this.postsControlInstance = new PostsControl();
+    this.map.addControl(this.postsControlInstance);
   }
 
   private addMarkers(): void {
@@ -294,8 +347,8 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       locGroup.addTo(this.map!);
       this.locationMarker = locGroup;
       
-      // Update der Location Button-Anzeige, um zu zeigen, dass Standort aktiv ist
-      this.updateLocationButtonState(true);
+      // // Update der Location Button-Anzeige, um zu zeigen, dass Standort aktiv ist
+      // this.updateLocationButtonState(true);
     });
     
     // Event-Handler für Fehler bei der Standortbestimmung
@@ -328,8 +381,8 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
           }, 5000); // Kürzere Wartezeit für bessere Benutzererfahrung
         }
         
-        // Update der Location Button-Anzeige
-        this.updateLocationButtonState(false);
+        // // Update der Location Button-Anzeige
+        // this.updateLocationButtonState(false);
       }
     });
   }
@@ -527,7 +580,7 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     
     // Marker-Icon anpassen
     const postIcon = L.icon({
-      iconUrl: "assets/post-marker.png", // Stelle sicher, dass diese Datei existiert oder nutze ein Standard-Icon
+      iconUrl: "assets/marker-icon-2x.png", // Stelle sicher, dass diese Datei existiert oder nutze ein Standard-Icon
       iconSize: [26, 35],
       iconAnchor: [13, 35],
       popupAnchor: [1, -34],
@@ -574,7 +627,9 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
                 // Event für Postdetails emittieren
                 this.markerClicked.emit(post.title);
                 console.log(`Post-Details angefordert für ID: ${postId}`);
-                // Hier könnten Sie zu einer Detailansicht navigieren
+                // TODO navigate to Posts detail Page
+                // this.router.navigate(['/posts', postId]);
+                
               }
             },
             { once: true }
@@ -583,8 +638,10 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
       }, 0);
     });
     
-    // Marker speichern, um sie später entfernen zu können
-    this.postMarkers.push(marker);
+    // Marker in markersData speichern
+    const updatedMarkers = [...this.markersData(), { lat: latitude, lng: longitude, title: post.title, description: post.description || '' }];
+    this.markersData.set(updatedMarkers);
+
   }
   
   /**
@@ -594,12 +651,21 @@ export class MapOverviewComponent implements AfterViewInit, OnDestroy {
     if (!this.map) return;
     
     // Alle Marker entfernen
-    this.postMarkers.forEach(marker => {
-      this.map?.removeLayer(marker);
-    });
+    // this.postMarkers.forEach(marker => {
+    //   this.map?.removeLayer(marker);
+    // });
+    this.markersData.set([]);
+    //remove Markers from map
+    this.map.eachLayer((layer) => {
+      if (layer instanceof L.Marker) {
+        this.map?.removeLayer(layer);
+      }
+    }
+    );
     
     // Array zurücksetzen
-    this.postMarkers = [];
+    // this.postMarkers = [];
+
   }
   
   /**
